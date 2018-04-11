@@ -159,12 +159,19 @@ var get_colour = function(e) {
 var get_classes = function(e) {
   if(e['UN Principal Organs'] == 'General Assembly') { return 'grid-item--width2'; }
   if(e['UN Principal Organs'] == 'Economic and Social Council') { return 'grid-item--width2'; }
+  if(e['UN Principal Organs'] == 'Secretariat') { return 'grid-item--width2'; }
   return '';
 }
 
 var get_grid_class = function(e) {
   text = e[0]['UN Principal Organs'];
   return text.replace(/[^a-z0-9 ]/gi,'').replace(new RegExp(' ', 'g'),'-');
+}
+
+var get_acronym = function(e) {
+  if (e['Entity Acronym'] != e['Entity Name']) {
+    return e['Entity Acronym'];
+  }
 }
 
 var process_sheet = function(groups) {
@@ -193,6 +200,7 @@ var process_inner_grid = function(elements, grid_class) {
   elements.forEach(function(e) {
     var view = {
       'group_name': get_inner_group_name(e),
+      'acronym': get_acronym(e),
     };
     var output = Mustache.render(template, view);
     $(grid_class).append(output);
@@ -216,7 +224,7 @@ $(function() {
 //        process_sheet(data[s]);
 //      });
       $('.header').each(function (i,a) {
-        $(a).bigtext();
+        $(a).bigtext({maxfontsize: 48});
       });
       $('.grid').isotope({
         itemSelector: '.grid-item',
