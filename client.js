@@ -229,6 +229,7 @@ $(function() {
       $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
+        layoutMode: 'packery',
         masonry: {
           columnWidth: '.grid-sizer'
         }
@@ -236,5 +237,9 @@ $(function() {
 //			update_selection();
     }
   });
+    $(".dropdown-menu").on('click', 'a', function(){
+      $(".btn:first-child").text($(this).text());
+      $(".btn:first-child").val($(this).text());
+   });
 })
 
