@@ -4,54 +4,60 @@
     <title>Prototype for UN organisation visualisation</title>
     <meta name="description" content="Get Google Spreadsheets as JSON">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,900|Source+Code+Pro:400" rel="stylesheet" type="text/css">
-    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.css" rel="stylesheet" type="text/css">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
   </head>
   <body>
 
     <header class="container">
       <h1>
-        Prototype for UN organisation visualisation
+        United Nations organisation visualisation (PROTOTYPE)
       </h1>
     </header>
 
     <main class="container">
 
-      <p>
-        <button class="mdc-button mdc-button--raised category-button button-ga" id="button-ga" onclick="type_clicked('ga')" data-demo-no-js="">General Assembly</button>
-        <button class="mdc-button mdc-button--raised category-button button-sc" id="button-sc" onclick="type_clicked('sc')" data-demo-no-js="">Security Council</button>
-        <button class="mdc-button mdc-button--raised category-button button-esc" id="button-esc" onclick="type_clicked('esc')" data-demo-no-js="">Economic and Social Council</button>
-        <button class="mdc-button mdc-button--raised category-button button-secretariat" id="button-secretariat" onclick="type_clicked('secretariat" data-demo-no-js="">Secretariat</button>
-      </p>
-
 			<script src="https://code.jquery.com/jquery-2.2.1.min.js"
 					 integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
 			crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 			<script src="client.js"></script>
 			<script src="https://rawgithub.com/jlord/sheetsee.js/master/js/sheetsee.js"></script>
 			<script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.5.1/tabletop.min.js'></script>
 			<script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
 			<script src="https://cdnjs.cloudflare.com/ajax/libs/oj.mustache/0.7.2/oj.mustache.js"></script>
-			<script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.js"></script>
 			<script src="bigtext.js"></script>
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
 
 <script id="template" type="x-tmpl-mustache">
 <div class="grid-item {{ classes }}">
   <div class="header" style="background-color: {{ colour }}">
     <span>{{ group_name }}</span>
   </div>
-  <div class="cardbody">
-    <div style="height: 500px; width: 1000px" class="grid-inner-{{ inner-grid-name }}"></div>
+  <div class="cardbody" style="background-color: {{ colour }}">
+    <div class="grid-inner-{{ inner-grid-name }}"></div>
   </div>
 </div>
 </script>
 
 <script id="templateinner" type="x-tmpl-mustache">
 <div class="grid-item-inside">
-  <div class="inner-header" style="background-color: {{ colour }}">
+  <div class="inner-header">
     <span>{{ group_name }}</span>
   </div>
 <!--
@@ -66,25 +72,28 @@
 </script>
 
 <style>
+.grid-sizer,
 .grid-item {
+  width: 33%;
   padding: 20px;
-/*  max-width: 350px; */
+}
+.grid-item--width2 {
+  width: 66%;
+  padding: 20px;
 }
 .grid-item-inside {
-  padding: 20px;
-  max-width: 200px;
-  height: 100px;
+  padding: 10px;
+  padding-bottom: 10px;
+  max-width: 130px;
 }
 .header {
   font-size: 2px;
-  background-color: coral;
   padding: 16px;
 }
 .cardbody {
   font-size: 14px;
-  background-color: #f0f0f0;
   padding: 16px;
-  height: 500px;
+  width: 100%;
 }
 .content {
   margin-top: 1em;
@@ -269,6 +278,26 @@ h1 {
 
 </style>
 
+<div class="dropdown">
+  <button style="margin-left: 22px; margin-top: 36px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Select crime type
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+<a class="dropdown-item" href="#">Human Trafficking</a>
+<a class="dropdown-item" href="#">Human Smuggling</a>
+<a class="dropdown-item" href="#">Drug Trafficking</a>
+<a class="dropdown-item" href="#">Arms Trafficking</a>
+<a class="dropdown-item" href="#">Resource Trafficking</a>
+<a class="dropdown-item" href="#">Wildlife Trafficking</a>
+<a class="dropdown-item" href="#">Theft / Armed Robbery</a>
+<a class="dropdown-item" href="#">Piracy</a>
+<a class="dropdown-item" href="#">Goods Trafficking</a>
+<a class="dropdown-item" href="#">Financial Crime</a>
+<a class="dropdown-item" href="#">Terrorism</a>
+<a class="dropdown-item" href="#">Kidnapping / Abductions</a>
+  </div>
+</div>
+
   <div id="loadingdiv">
   <div class="sk-fading-circle">
   <div class="sk-circle1 sk-circle"></div>
@@ -286,8 +315,9 @@ h1 {
 </div>
 </div>
   </div>
-	<div class="grid"></div>
-	<div class="grid-outer"></div>
+  	<div class="grid">
+      <div class="grid-sizer"></div>
+    </div>
     </main>
 	</body>
 </html>

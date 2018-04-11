@@ -36,22 +36,22 @@ var deselect_type = function(type) {
 }
 
 var update_selection = function() {
-	$('.grid').isotope({ filter: function() {
-    var header = $(this).find('.header').text();
-    if(header.length < 3 || header.length > 30 || !/\S/.test(header)) return false;
-    if(global_selection) {
-      var classes = $(this).attr('class').split(' ');
-      if (!classes.includes('grid-'+global_selection)) return false;
-		}
-    if(global_searchterm) {
-  		var c = $(this).find('span').text();
-  		c += $(this).find('.title').text();
-  		c += $(this).find('.content').text();
-  		c += $(this).find('.category').text();
-      return c.search(new RegExp(global_searchterm, "i")) != -1;
-    }
-    return true;
-	}});
+//	$('.grid').isotope({ filter: function() {
+//    var header = $(this).find('.header').text();
+//    if(header.length < 3 || header.length > 30 || !/\S/.test(header)) return false;
+//    if(global_selection) {
+//      var classes = $(this).attr('class').split(' ');
+//      if (!classes.includes('grid-'+global_selection)) return false;
+//		}
+//    if(global_searchterm) {
+//  		var c = $(this).find('span').text();
+//  		c += $(this).find('.title').text();
+//  		c += $(this).find('.content').text();
+//  		c += $(this).find('.category').text();
+//      return c.search(new RegExp(global_searchterm, "i")) != -1;
+//    }
+//    return true;
+//	}});
 }
 
 var get_one_of_fields = function(e, fields) {
@@ -139,8 +139,27 @@ var get_inner_group_name = function(e) {
 }
 
 var get_colour = function(e) {
-  if(e[0]['UN Principal Organs'] == 'General Assembly') { return 'red'; }
-  else {return 'blue';}
+  switch(e[0]['UN Principal Organs']) {
+  case 'General Assembly':
+    return '#dae090';
+  case 'Security Council':
+    return '#fed59f';
+  case 'Economic and Social Council':
+    return '#cae9eb';
+  case 'Secretariat':
+    return '#fee385';
+  case 'International Court of Justice':
+    return '#cbc4de';
+  case 'Trusteeship Council':
+    return '#ddd0c2';
+  }
+  return 'coral';
+}
+
+var get_classes = function(e) {
+  if(e['UN Principal Organs'] == 'General Assembly') { return 'grid-item--width2'; }
+  if(e['UN Principal Organs'] == 'Economic and Social Council') { return 'grid-item--width2'; }
+  return '';
 }
 
 var get_grid_class = function(e) {
@@ -157,6 +176,7 @@ var process_sheet = function(groups) {
     grid_class = get_grid_class(e);
     var view = {
       'colour': get_colour(e),
+      'classes': get_classes(e[0]),
       'group_name': get_group_name(e[0]),
       'inner-grid-name': grid_class
     };
@@ -172,14 +192,13 @@ var process_inner_grid = function(elements, grid_class) {
 //  data.elements.forEach(function(e) {
   elements.forEach(function(e) {
     var view = {
-      'colour': 'blue',
       'group_name': get_inner_group_name(e),
     };
     var output = Mustache.render(template, view);
     $(grid_class).append(output);
-//    $(grid_class).isotope({
-//      itemSelector: '.grid-item-inside',
-//    });
+  });
+  $(grid_class).isotope({
+    itemSelector: '.grid-item-inside',
   });
 }
 
@@ -199,23 +218,14 @@ $(function() {
       $('.header').each(function (i,a) {
         $(a).bigtext();
       });
-//      $('.grid').isotope({
-//        itemSelector: '.grid-item',
-//        getSortData: { name: '.bigtext-line0' },
-//        sortBy: 'name'
-//      });
-			update_selection();
+      $('.grid').isotope({
+        itemSelector: '.grid-item',
+        percentPosition: true,
+        masonry: {
+          columnWidth: '.grid-sizer'
+        }
+      });
+//			update_selection();
     }
   });
-  window.mdc.autoInit();
-	var tfs = document.querySelectorAll(
-			'.mdc-text-field:not([data-demo-no-auto-js])'
-			);
-	for (var i = 0, tf; tf = tfs[i]; i++) {
-		mdc.textField.MDCTextField.attachTo(tf);
-	}
-  $('#searchfield').bind('input', function(){
-    global_searchterm = $(this).val();
-    update_selection();
-	});
 })
