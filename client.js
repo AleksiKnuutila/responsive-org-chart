@@ -116,6 +116,14 @@ var prepare_author = function(e) {
   return get_one_of_fields(e, ['Artist/ Curator', 'Author/ Editor', 'Organisation', 'Director']);
 }
 
+var get_crime_types = function(data) {
+  crime_types = [];
+  data.elements.forEach(function(e) {
+    crime_types.push(e.Crimes);
+  });
+  return crime_types;
+}
+
 var get_groups = function(data) {
   cur_group = '';
   groups = {};
@@ -163,6 +171,28 @@ var get_classes = function(e) {
   return '';
 }
 
+var get_crime_type_class = function(classname) {
+  switch (classname) {
+    case "Human trafficking and smuggling": return 'crime-trafficking';
+    case "Environmental Crime": return 'crime-environmental';
+    case "Arms Trafficking": return 'crime-arms';
+    case "Drugs": return 'crime-drugs';
+    case "Cybercrime": return 'crime-cyber';
+    case "Financial Crime": return 'crime-financial';
+  }
+  return 'crime-'+classname.replace(' ','');
+}
+
+var get_inner_classes = function(e) {
+  classes = [];
+  glob_crime_types.forEach(function(c) {
+    if(e[c] && e[c] === "TRUE") {
+      classes.push(get_crime_type_class(c));
+    }
+  });
+  return classes.join(' ');
+}
+
 var get_grid_class = function(e) {
   text = e[0]['UN Principal Organs'];
   return text.replace(/[^a-z0-9 ]/gi,'').replace(new RegExp(' ', 'g'),'-');
@@ -200,6 +230,7 @@ var process_inner_grid = function(elements, grid_class) {
   elements.forEach(function(e) {
     var view = {
       'group_name': get_inner_group_name(e),
+      'classes': get_inner_classes(e),
       'acronym': get_acronym(e),
     };
     var output = Mustache.render(template, view);
@@ -211,13 +242,14 @@ var process_inner_grid = function(elements, grid_class) {
 }
 
 
-
+var glob_crime_types;
 $(function() {
   Tabletop.init({
     key: publicSpreadsheetUrl,
     callback: function gotData (data, tabletop) {
       $("#loadingdiv").fadeOut(400);
       groups = get_groups(data['Entities']);
+      glob_crime_types = get_crime_types(data['Crimes']);
       process_sheet(groups);
 //      });
 //      tabletop.modelNames.forEach(function(s) {
