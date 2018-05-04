@@ -269,6 +269,19 @@ var remove_highlight = function() {
   });
   $('.unhighlight-grid-item').each(function(i,e) {
     $(e).removeClass('unhighlight-grid-item');
+    change_opacity($(e).children()[0],'0.99');
+  });
+  $('.cardbody').each(function(i,e) {
+    change_opacity(e,'0.99');
+  });
+  $('.header').each(function(i,e) {
+    change_opacity(e,'0.99');
+  });
+}
+
+var generate_dropdown = function(element,crime_types) {
+  crime_types.forEach(function(c) {
+    $(element).append('<a class="dropdown-item" href="#">'+c+'</a>');
   });
 }
 
@@ -280,6 +293,7 @@ $(function() {
       $("#loadingdiv").fadeOut(400);
       groups = get_groups(data['Entities']);
       glob_crime_types = get_crime_types(data['Crimes']);
+      generate_dropdown($(".dropdown-menu"),glob_crime_types);
       process_sheet(groups);
       $('.header').each(function (i,a) {
         $(a).bigtext({maxfontsize: 48});
@@ -296,8 +310,14 @@ $(function() {
     }
   });
     $(".dropdown-menu").on('click', 'a', function(){
+      remove_highlight();
+      highlight(get_crime_type_class($(this).text()));
       $(".btn:first-child").text($(this).text());
       $(".btn:first-child").val($(this).text());
    });
+   $('#clear-button').click(function(){
+      remove_highlight();
+      $(".btn:first-child").text('Select crime type');
+      $(".btn:first-child").val('Select crime type');
+   });
 })
-

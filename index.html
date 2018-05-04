@@ -325,6 +325,11 @@ h1 {
     margin-right: 20px;
     border-radius: 15px;
     display: inline-block;
+    width: 382px;
+}
+
+#crime-select {
+  width: 250px;
 }
 
 </style>
@@ -337,25 +342,13 @@ h1 {
         </p>
 
 <div class="dropdown">
-  <button style="float:left; margin-right: 10px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button id="crime-select" style="float:left; margin-right: 10px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Select crime type
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-<a class="dropdown-item" href="#">Human Trafficking</a>
-<a class="dropdown-item" href="#">Human Smuggling</a>
-<a class="dropdown-item" href="#">Drug Trafficking</a>
-<a class="dropdown-item" href="#">Arms Trafficking</a>
-<a class="dropdown-item" href="#">Resource Trafficking</a>
-<a class="dropdown-item" href="#">Wildlife Trafficking</a>
-<a class="dropdown-item" href="#">Theft / Armed Robbery</a>
-<a class="dropdown-item" href="#">Piracy</a>
-<a class="dropdown-item" href="#">Goods Trafficking</a>
-<a class="dropdown-item" href="#">Financial Crime</a>
-<a class="dropdown-item" href="#">Terrorism</a>
-<a class="dropdown-item" href="#">Kidnapping / Abductions</a>
   </div>
 </div>
-  <button class="btn btn-secondary" type="button">
+<button id="clear-button" class="btn btn-secondary" type="button">
     Show all
   </button>
 
@@ -366,7 +359,6 @@ h1 {
       </div>
       </div>
     </div>
-
 
   <div id="loadingdiv">
   <div class="sk-fading-circle">
