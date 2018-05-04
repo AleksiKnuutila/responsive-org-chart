@@ -1,12 +1,6 @@
 var publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1cYOaqDscPMAe-msW_GL8_IWwPTxKQEj7M44ImEafW6s/edit?usp=sharing';
 var types = ["Artwork and exhibitions", "Cinema", "Organisations", "Theory"];
 var types_varnames = ["artwork", "cinema", "organisations", "theory"];
-var colours = {
-	'artwork': '#66c2a5',
-	'theory': '#fc8d62',
-	'organisations': '#8da0cb',
-	'cinema': '#e78ac3'
-};
 
 var global_selection;
 var global_searchterm;
@@ -147,7 +141,7 @@ var get_inner_group_name = function(e) {
 }
 
 var get_colour = function(e) {
-  switch(e[0]['UN Principal Organs']) {
+  switch(e['UN Principal Organs']) {
   case 'General Assembly':
     return '#dae090';
   case 'Security Council':
@@ -212,7 +206,7 @@ var process_sheet = function(groups) {
     e = groups[k];
     grid_class = get_grid_class(e);
     var view = {
-      'colour': get_colour(e),
+      'colour': get_colour(e[0]),
       'classes': get_classes(e[0]),
       'group_name': get_group_name(e[0]),
       'inner-grid-name': grid_class
@@ -229,6 +223,7 @@ var process_inner_grid = function(elements, grid_class) {
 //  data.elements.forEach(function(e) {
   elements.forEach(function(e) {
     var view = {
+      'colour': get_colour(e),
       'group_name': get_inner_group_name(e),
       'classes': get_inner_classes(e),
       'acronym': get_acronym(e),
@@ -241,6 +236,23 @@ var process_inner_grid = function(elements, grid_class) {
   });
 }
 
+var highlight = function(crime_class) {
+  $('.'+crime_class).each(function(i,e) {
+    $(e).addClass('highlight-grid-item');
+  });
+  $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
+    $(e).addClass('desaturate');
+  });
+}
+
+var remove_highlight = function() {
+  $('.highlight-grid-item').each(function(i,e) {
+    $(e).removeClass('highlight-grid-item');
+  });
+  $('.desaturate').each(function(i,e) {
+    $(e).removeClass('desaturate');
+  });
+}
 
 var glob_crime_types;
 $(function() {

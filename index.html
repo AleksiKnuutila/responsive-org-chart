@@ -57,8 +57,8 @@
 </script>
 
 <script id="templateinner" type="x-tmpl-mustache">
-<div class="grid-item-inside">
-  <div class="inner-header {{ classes }}">
+<div class="grid-item-inside {{ classes }}" style="background-color: {{ colour }}">
+  <div class="grid-item-inside-text"  style="background-color: {{ colour }}">
     <span class="acronym">{{ acronym }}</span> <span>{{ group_name }}</span>
   </div>
 <!--
@@ -75,6 +75,30 @@
 body {
   font-family: 'Arimo', sans-serif;
 }
+
+.highlight-grid-item {
+  position:relative;
+}
+.highlight-grid-item:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  box-shadow: 4px 4px 8px 0px rgba(0,0,0,0.33);
+}
+
+.desaturate {
+  z-index: 1;
+  filter: grayscale(100%);
+}
+
+.grid {
+  z-index: 0;
+}
+
 .grid-sizer,
 .grid-item {
   width: 25%;
@@ -85,9 +109,13 @@ body {
   padding: 2px;
 }
 .grid-item-inside {
+  width: 85px;
+}
+.grid-item-inside-text {
   padding: 3px;
   padding-bottom: 4px;
-  width: 85px;
+  position: relative;
+  z-index: 5;
 }
 .acronym {
   font-weight: 700;
