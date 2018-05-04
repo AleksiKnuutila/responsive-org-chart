@@ -143,17 +143,17 @@ var get_inner_group_name = function(e) {
 var get_colour = function(e) {
   switch(e['UN Principal Organs']) {
   case 'General Assembly':
-    return '#dae090';
+    return 'rgba(218, 224, 144, 0.99)';
   case 'Security Council':
-    return '#fed59f';
+    return 'rgba(254, 213, 159, 0.99)';
   case 'Economic and Social Council':
-    return '#cae9eb';
+    return 'rgba(202, 233, 235, 0.99)';
   case 'Secretariat':
-    return '#fee385';
+    return 'rgba(254, 227, 133, 0.99)';
   case 'International Court of Justice':
-    return '#cbc4de';
+    return 'rgba(203, 196, 222, 0.99)';
   case 'Trusteeship Council':
-    return '#ddd0c2';
+    return 'rgba(221, 208, 194, 0.99)';
   }
   return 'coral';
 }
@@ -236,12 +236,30 @@ var process_inner_grid = function(elements, grid_class) {
   });
 }
 
+function getPosition(string, subString, index) {
+   return string.split(subString, index).join(subString).length;
+}
+
+var change_opacity = function(e,val) {
+  var currentColor = $(e).css('background-color');
+  var lastComma = getPosition(currentColor, ',', 3);
+  var newColor = currentColor.slice(0, lastComma) + ", "+ val + ")";
+  $(e).css('background-color', newColor);
+}
+
 var highlight = function(crime_class) {
   $('.'+crime_class).each(function(i,e) {
     $(e).addClass('highlight-grid-item');
   });
   $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
-    $(e).addClass('desaturate');
+    $(e).addClass('unhighlight-grid-item');
+    change_opacity($(e).children()[0],'0');
+  });
+  $('.cardbody').each(function(i,e) {
+    change_opacity(e,'0.3');
+  });
+  $('.header').each(function(i,e) {
+    change_opacity(e,'0.3');
   });
 }
 
@@ -249,8 +267,8 @@ var remove_highlight = function() {
   $('.highlight-grid-item').each(function(i,e) {
     $(e).removeClass('highlight-grid-item');
   });
-  $('.desaturate').each(function(i,e) {
-    $(e).removeClass('desaturate');
+  $('.unhighlight-grid-item').each(function(i,e) {
+    $(e).removeClass('unhighlight-grid-item');
   });
 }
 
@@ -263,10 +281,6 @@ $(function() {
       groups = get_groups(data['Entities']);
       glob_crime_types = get_crime_types(data['Crimes']);
       process_sheet(groups);
-//      });
-//      tabletop.modelNames.forEach(function(s) {
-//        process_sheet(data[s]);
-//      });
       $('.header').each(function (i,a) {
         $(a).bigtext({maxfontsize: 48});
       });

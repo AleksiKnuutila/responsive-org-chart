@@ -57,7 +57,7 @@
 </script>
 
 <script id="templateinner" type="x-tmpl-mustache">
-<div class="grid-item-inside {{ classes }}" style="background-color: {{ colour }}">
+<div class="grid-item-inside {{ classes }}">
   <div class="grid-item-inside-text"  style="background-color: {{ colour }}">
     <span class="acronym">{{ acronym }}</span> <span>{{ group_name }}</span>
   </div>
@@ -90,8 +90,11 @@ body {
   box-shadow: 4px 4px 8px 0px rgba(0,0,0,0.33);
 }
 
-.desaturate {
+.unhighlight-grid-item {
   z-index: 1;
+}
+
+.desaturate {
   filter: grayscale(100%);
 }
 
