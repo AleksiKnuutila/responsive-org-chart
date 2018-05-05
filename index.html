@@ -8,7 +8,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
   </head>
   <body>
@@ -35,6 +34,13 @@
 			<script src="dist/bigtext.js"></script>
 			<script src="dist/packery-mode.pkgd.js"></script>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="vendor/remodal.css">
+    <link rel="stylesheet" href="vendor/remodal-default-theme.css">
+    <script src="vendor/remodal.min.js"></script>
+
+    <script src="https://cdn.rawgit.com/showdownjs/showdown/1.8.0/dist/showdown.min.js"></script>
+
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -57,17 +63,10 @@
 </script>
 
 <script id="templateinner" type="x-tmpl-mustache">
-<div class="grid-item-inside {{ classes }}">
+<div onclick="display_modal(this)" data-descriptions="{{ descriptions }}" class="grid-item-inside {{ classes }}">
   <div class="grid-item-inside-text"  style="background-color: {{ colour }}">
     <span class="acronym">{{ acronym }}</span> <span>{{ group_name }}</span>
   </div>
-<!--
-  <div class="cardbody">
-    <div class="content">{{ content }}</div>
-    {{{link}}}
-    <div class="category">{{ category }}</div>
-  </div>
--->
 </div>
 </script>
 
@@ -332,6 +331,14 @@ h1 {
   width: 250px;
 }
 
+.remodal {
+  text-align: left;
+  font-size: 14px;
+}
+.remodal-confirm {
+  margin-top: 25px;
+}
+
 </style>
 
 
@@ -381,5 +388,7 @@ h1 {
       <div class="grid-sizer"></div>
     </div>
     </main>
+  <div class="remodal" data-remodal-id="modal">
+  </div>
 	</body>
 </html>

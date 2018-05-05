@@ -1,52 +1,4 @@
 var publicSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/1cYOaqDscPMAe-msW_GL8_IWwPTxKQEj7M44ImEafW6s/edit?usp=sharing';
-var types = ["Artwork and exhibitions", "Cinema", "Organisations", "Theory"];
-var types_varnames = ["artwork", "cinema", "organisations", "theory"];
-
-var global_selection;
-var global_searchterm;
-var type_clicked = function(type) {
-  if(global_selection === type) {
-    global_selection = '';
-    deselect_type(type);
-		update_selection();
-  } else {
-    if(global_selection) deselect_type(global_selection);
-    global_selection = type;
-    select_type(type);
-		update_selection();
-  }
-}
-
-var select_type = function(type) {
-  types_varnames.forEach(function (t) {
-    if(t!=type) $('#button-'+t).toggleClass('button-'+t);
-  });
-}
-
-var deselect_type = function(type) {
-  types_varnames.forEach(function (t) {
-    if(t!=type) $('#button-'+t).toggleClass('button-'+t);
-  });
-}
-
-var update_selection = function() {
-//	$('.grid').isotope({ filter: function() {
-//    var header = $(this).find('.header').text();
-//    if(header.length < 3 || header.length > 30 || !/\S/.test(header)) return false;
-//    if(global_selection) {
-//      var classes = $(this).attr('class').split(' ');
-//      if (!classes.includes('grid-'+global_selection)) return false;
-//		}
-//    if(global_searchterm) {
-//  		var c = $(this).find('span').text();
-//  		c += $(this).find('.title').text();
-//  		c += $(this).find('.content').text();
-//  		c += $(this).find('.category').text();
-//      return c.search(new RegExp(global_searchterm, "i")) != -1;
-//    }
-//    return true;
-//	}});
-}
 
 var get_one_of_fields = function(e, fields) {
   for(i=0;i<fields.length;i++) {
@@ -62,19 +14,6 @@ var get_colour = function(sheet, e) {
 		return colours[sheet_varname];
 	} else {
 		return 'coral';
-	}
-}
-
-var sheetname_to_varname = function(sheetname) {
-	switch(sheetname) {
-		case 'Artwork and exhibitions':
-			return 'artwork';
-		case 'Theory':
-			return 'theory';
-		case 'Organisations':
-			return 'organisations';
-		case 'Cinema':
-			return 'cinema';
 	}
 }
 
@@ -198,7 +137,14 @@ var get_acronym = function(e) {
   }
 }
 
-var process_sheet = function(groups) {
+var get_description = function(element,data) {
+  var name = element['Entity Name'];
+  var descriptions = data['Descriptions'].elements.find(function(e) { return e['Entity Name'] === name })
+  return JSON.stringify(descriptions);
+}
+
+var process_sheet = function(data) {
+  var groups = get_groups(data['Entities']);
   var template = $('#template').html();
   Mustache.parse(template);
 //  data.elements.forEach(function(e) {
@@ -213,11 +159,11 @@ var process_sheet = function(groups) {
     };
     var output = Mustache.render(template, view);
     $('.grid').append(output);
-    process_inner_grid(groups[k], '.grid-inner-'+grid_class);
+    process_inner_grid(groups[k], '.grid-inner-'+grid_class, data);
   });
 }
 
-var process_inner_grid = function(elements, grid_class) {
+var process_inner_grid = function(elements, grid_class, data) {
   var template = $('#templateinner').html();
   Mustache.parse(template);
 //  data.elements.forEach(function(e) {
@@ -227,6 +173,7 @@ var process_inner_grid = function(elements, grid_class) {
       'group_name': get_inner_group_name(e),
       'classes': get_inner_classes(e),
       'acronym': get_acronym(e),
+      'descriptions': get_description(e,data),
     };
     var output = Mustache.render(template, view);
     $(grid_class).append(output);
@@ -285,16 +232,26 @@ var generate_dropdown = function(element,crime_types) {
   });
 }
 
+function display_modal(object) {
+  var inst = $('[data-remodal-id=modal]').remodal();
+  var descriptions = JSON.parse($(object).attr('data-descriptions'));
+  var converter = new showdown.Converter();
+  // XXX: here, somehow figure out what we are highlighting..
+  var html = converter.makeHtml(descriptions['General Description']);
+  html += '</ul><button data-remodal-action="confirm" class="remodal-confirm">OK</button>';
+  inst.$modal.html(html);
+  inst.open();
+}
+
 var glob_crime_types;
 $(function() {
   Tabletop.init({
     key: publicSpreadsheetUrl,
     callback: function gotData (data, tabletop) {
       $("#loadingdiv").fadeOut(400);
-      groups = get_groups(data['Entities']);
       glob_crime_types = get_crime_types(data['Crimes']);
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
-      process_sheet(groups);
+      process_sheet(data);
       $('.header').each(function (i,a) {
         $(a).bigtext({maxfontsize: 48});
       });
@@ -320,4 +277,6 @@ $(function() {
       $(".btn:first-child").text('Select crime type');
       $(".btn:first-child").val('Select crime type');
    });
+   var inst = $('[data-remodal-id=modal]').remodal();
+   inst.close();
 })
