@@ -197,15 +197,15 @@ var change_opacity = function(e,val) {
   var currentColor = $(e).css('background-color');
   var lastComma = getPosition(currentColor, ',', 3);
   var newColor = currentColor.slice(0, lastComma) + ", "+ val + ")";
-  $(e).css('background-color', newColor);
+  $(e).animate({'background-color': newColor},500);
 }
 
 var highlight = function(crime_class) {
   $('.'+crime_class).each(function(i,e) {
-    $(e).addClass('highlight-grid-item');
+    $(e).addClass('highlight-grid-item',300);
   });
   $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
-    $(e).addClass('unhighlight-grid-item');
+    $(e).addClass('unhighlight-grid-item',300);
     change_opacity($(e).children()[0],'0');
   });
   $('.cardbody').each(function(i,e) {
@@ -216,12 +216,30 @@ var highlight = function(crime_class) {
   });
 }
 
+var switch_highlight = function(crime_class) {
+  $('.highlight-grid-item').each(function(i,e) {
+    $(e).removeClass('highlight-grid-item',900);
+  });
+//  $('.unhighlight-grid-item').each(function(i,e) {
+//    $(e).removeClass('unhighlight-grid-item',300);
+//    change_opacity($(e).children()[0],'0.99');
+//  });
+  $('.'+crime_class).each(function(i,e) {
+    $(e).addClass('highlight-grid-item',900);
+    change_opacity($(e).children()[0],'0.99');
+  });
+  $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
+    $(e).addClass('unhighlight-grid-item',900);
+    change_opacity($(e).children()[0],'0');
+  });
+}
+
 var remove_highlight = function() {
   $('.highlight-grid-item').each(function(i,e) {
-    $(e).removeClass('highlight-grid-item');
+    $(e).removeClass('highlight-grid-item',300);
   });
   $('.unhighlight-grid-item').each(function(i,e) {
-    $(e).removeClass('unhighlight-grid-item');
+    $(e).removeClass('unhighlight-grid-item',300);
     change_opacity($(e).children()[0],'0.99');
   });
   $('.cardbody').each(function(i,e) {
@@ -273,11 +291,16 @@ $(function() {
     }
   });
     $(".dropdown-menu").on('click', 'a', function(){
-      remove_highlight();
-      glob_selection = $(this).text();
-      highlight(get_crime_type_class($(this).text()));
+//      remove_highlight();
+      if(glob_selection === 'General Description') {
+        // first highlightj
+        highlight(get_crime_type_class($(this).text()));
+      } else {
+        switch_highlight(get_crime_type_class($(this).text()));
+      }
       $(".btn:first-child").text($(this).text());
       $(".btn:first-child").val($(this).text());
+      glob_selection = $(this).text();
    });
    $('#clear-button').click(function(){
       remove_highlight();
