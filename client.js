@@ -259,7 +259,7 @@ $(function() {
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
       process_sheet(data);
       $('.header').each(function (i,a) {
-        $(a).bigtext({maxfontsize: 48,minfontsize: 8});
+        $(a).bigtext({maxfontsize: 48,minfontsize: 6});
       });
       $('.grid').isotope({
         itemSelector: '.grid-item',
