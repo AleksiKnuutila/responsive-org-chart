@@ -79,6 +79,11 @@ var get_inner_group_name = function(e) {
   return e['Entity Name'];
 }
 
+var get_entity_class = function(e) {
+  if(!get_acronym(e)) { return 'entity-name-nohide'; }
+  return 'entity-name';
+}
+
 var get_colour = function(e) {
   switch(e['UN Principal Organs']) {
   case 'General Assembly':
@@ -171,6 +176,7 @@ var process_inner_grid = function(elements, grid_class, data) {
     var view = {
       'colour': get_colour(e),
       'group_name': get_inner_group_name(e),
+      'entity_class': get_entity_class(e),
       'classes': get_inner_classes(e),
       'acronym': get_acronym(e),
       'descriptions': get_description(e,data),
@@ -253,7 +259,7 @@ $(function() {
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
       process_sheet(data);
       $('.header').each(function (i,a) {
-        $(a).bigtext({maxfontsize: 48});
+        $(a).bigtext({maxfontsize: 48,minfontsize: 8});
       });
       $('.grid').isotope({
         itemSelector: '.grid-item',

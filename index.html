@@ -65,7 +65,7 @@
 <script id="templateinner" type="x-tmpl-mustache">
 <div onclick="display_modal(this)" data-descriptions="{{ descriptions }}" class="grid-item-inside {{ classes }}">
   <div class="grid-item-inside-text"  style="background-color: {{ colour }}">
-    <span class="acronym">{{ acronym }}</span> <span>{{ group_name }}</span>
+    <span class="acronym">{{ acronym }}</span> <span class="{{ entity_class }}">{{ group_name }}</span>
   </div>
 </div>
 </script>
@@ -120,6 +120,9 @@ body {
   .grid-item-inside {
     width: 50px;
   }
+  .entity-name {
+    display: none;
+  }
 }
 
 @media only screen and (min-width: 769px) {
@@ -133,8 +136,7 @@ body {
 }
 .header {
   font-size: 2px;
-  padding: 16px;
-  padding-top: 6px;
+  padding: 7px;
   padding-left padding-right: 12px;
   padding-bottom: 0px;
   font-family: 'Arimo', sans-serif;
@@ -336,11 +338,13 @@ h1 {
 /*    width: 382px; */
 }
 
-/*
 #crime-select {
-  width: 250px;
+/*  width: 250px; */
+  margin-top: 13px;
 }
-*/
+#clear-button {
+  margin-top: 13px;
+}
 
 .remodal {
   text-align: left;
@@ -374,10 +378,6 @@ h1 {
 <button id="clear-button" class="btn btn-secondary" type="button">
     Show all
   </button>
-
-  <div style="clear: all; margin-top:25px;">
-  (Prototype user interface - will be implemented later)
-  </div>
 
       </div>
       </div>
