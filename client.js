@@ -236,14 +236,14 @@ function display_modal(object) {
   var inst = $('[data-remodal-id=modal]').remodal();
   var descriptions = JSON.parse($(object).attr('data-descriptions'));
   var converter = new showdown.Converter();
-  // XXX: here, somehow figure out what we are highlighting..
-  var html = converter.makeHtml(descriptions['General Description']);
+  var html = converter.makeHtml(descriptions[glob_selection]);
   html += '</ul><button data-remodal-action="confirm" class="remodal-confirm">OK</button>';
   inst.$modal.html(html);
   inst.open();
 }
 
 var glob_crime_types;
+var glob_selection = 'General Description';
 $(function() {
   Tabletop.init({
     key: publicSpreadsheetUrl,
@@ -268,12 +268,14 @@ $(function() {
   });
     $(".dropdown-menu").on('click', 'a', function(){
       remove_highlight();
+      glob_selection = $(this).text();
       highlight(get_crime_type_class($(this).text()));
       $(".btn:first-child").text($(this).text());
       $(".btn:first-child").val($(this).text());
    });
    $('#clear-button').click(function(){
       remove_highlight();
+      glob_selection = 'General Description';
       $(".btn:first-child").text('Select crime type');
       $(".btn:first-child").val('Select crime type');
    });

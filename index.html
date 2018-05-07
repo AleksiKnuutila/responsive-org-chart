@@ -100,7 +100,6 @@ body {
 .grid {
   z-index: 0;
 }
-
 .grid-sizer,
 .grid-item {
   width: 25%;
@@ -110,15 +109,25 @@ body {
   width: 50%;
   padding: 2px;
 }
-.grid-item-inside {
-  width: 85px;
-}
 .grid-item-inside-text {
   padding: 3px;
   padding-bottom: 4px;
   position: relative;
   z-index: 5;
 }
+
+@media only screen and (max-width: 767px) {
+  .grid-item-inside {
+    width: 50px;
+  }
+}
+
+@media only screen and (min-width: 769px) {
+  .grid-item-inside {
+    width: 85px;
+  }
+}
+
 .acronym {
   font-weight: 700;
 }
@@ -337,6 +346,11 @@ h1 {
 }
 .remodal-confirm {
   margin-top: 25px;
+}
+
+.remodal h1 {
+  margin: 0px;
+  margin-bottom: 20px;
 }
 
 </style>
