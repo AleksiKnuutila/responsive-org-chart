@@ -269,6 +269,7 @@ function display_modal(object) {
 
 var glob_crime_types;
 var glob_selection = 'General Description';
+var glob_grid;
 $(function() {
   Tabletop.init({
     key: publicSpreadsheetUrl,
@@ -280,14 +281,18 @@ $(function() {
       $('.header').each(function (i,a) {
         $(a).bigtext({maxfontsize: 48,minfontsize: 6});
       });
-      $('.grid').isotope({
+      glob_grid = $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
         layoutMode: 'packery',
         masonry: {
           columnWidth: '.grid-sizer'
-        }
+        },
+        stamp: '.stamp'
       });
+        stampe = glob_grid.find('.stamp');
+        glob_grid.isotope('stamp',stampe);
+        glob_grid.isotope('layout');
 //			update_selection();
     }
   });
