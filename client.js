@@ -252,7 +252,8 @@ var remove_highlight = function() {
 
 var generate_dropdown = function(element,crime_types) {
   crime_types.forEach(function(c) {
-    $(element).append('<a class="dropdown-item" href="#">'+c+'</a>');
+    $(element).append('<label class="btn btn-secondary"><input type="radio" name="options" id="option3" autocomplete="off">'+c+'</label>');
+//    $(element).append('<a class="dropdown-item" href="#">'+c+'</a>');
   });
 }
 

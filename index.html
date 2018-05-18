@@ -334,7 +334,7 @@ h1 {
 }
 
 .roundbox {
-    background-color: #eee;
+/*    background-color: #eee; */
     padding: 20px;
     margin-right: 20px;
     border-radius: 15px;
@@ -368,10 +368,15 @@ h1 {
 
 <div style="margin-top: 36px; margin-bottom: 36px;" class="roundbox" style="margin-right: 70px;">
 
+  <!--
+
         <p style="text-align: left; margin-top: 0px; margin-bottom: 4px; font-size: 17px; color: #333333; font-weight: bold; font-family: HelveticaNeue-Light, Helvetica Neue Light, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif;">
         Select crime types to highlight
         </p>
 
+  -->
+
+<!--
 <div class="dropdown">
   <button id="crime-select" style="float:left; margin-right: 10px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Select crime type
@@ -382,6 +387,33 @@ h1 {
 <button id="clear-button" class="btn btn-secondary" type="button">
     Show all
   </button>
+-->
+
+<div class="dropdown">
+  <div class="btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+      <input type="radio" name="options" id="option1" autocomplete="off" checked>Select all
+    </label>
+  </div>
+</div>
+
+<!--
+
+<div class="dropdown">
+  <div class="dropdown-menu" class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active">
+      <input type="radio" name="options" id="option1" autocomplete="off" checked>Select all
+    </label>
+    <label class="btn btn-secondary">
+      <input type="radio" name="options" id="option2" autocomplete="off"> Radio
+    </label>
+    <label class="btn btn-secondary">
+      <input type="radio" name="options" id="option3" autocomplete="off"> Radio
+    </label>
+  </div>
+</div>
+
+-->
 
       </div>
       </div>
