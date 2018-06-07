@@ -152,7 +152,6 @@ var process_sheet = function(data) {
   var groups = get_groups(data['Entities']);
   var template = $('#template').html();
   Mustache.parse(template);
-//  data.elements.forEach(function(e) {
   Object.keys(groups).forEach(function(k) {
     e = groups[k];
     grid_class = get_grid_class(e);
@@ -166,6 +165,25 @@ var process_sheet = function(data) {
     $('.grid').append(output);
     process_inner_grid(groups[k], '.grid-inner-'+grid_class, data);
   });
+}
+
+var get_origin_left = function(grid_class) {
+  switch(grid_class) {
+  case '.grid-inner-General-Assembly': return false;
+  case '.grid-inner-Secretariat': return true;
+  case '.grid-inner-Economic-and-Social-Council': return false;
+  case '.grid-inner-Security-Council': return true;
+  }
+  return false;
+}
+var get_origin_top = function(grid_class) {
+  switch(grid_class) {
+  case '.grid-inner-General-Assembly': return false;
+  case '.grid-inner-Secretariat': return false;
+  case '.grid-inner-Economic-and-Social-Council': return true;
+  case '.grid-inner-Security-Council': return true;
+  }
+  return false;
 }
 
 var process_inner_grid = function(elements, grid_class, data) {
@@ -186,6 +204,9 @@ var process_inner_grid = function(elements, grid_class, data) {
   });
   $(grid_class).isotope({
     itemSelector: '.grid-item-inside',
+    layoutMode: 'packery',
+    originTop: false,
+//    originTop: get_origin_top(grid_class)
   });
 }
 
@@ -276,7 +297,6 @@ $(function() {
     callback: function gotData (data, tabletop) {
       $("#loadingdiv").fadeOut(400);
       glob_crime_types = get_crime_types(data['Crimes']);
-      generate_dropdown($(".dropdown-menu"),glob_crime_types);
       process_sheet(data);
       $('.header').each(function (i,a) {
         $(a).bigtext({maxfontsize: 48,minfontsize: 6});
@@ -284,15 +304,16 @@ $(function() {
       glob_grid = $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
-        layoutMode: 'packery',
         masonry: {
           columnWidth: '.grid-sizer'
         },
         stamp: '.stamp'
       });
+      glob_grid.append('<div class="dropdown"><div class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select all</label></div>');
+      generate_dropdown($(".dropdown-menu"),glob_crime_types);
         stampe = glob_grid.find('.stamp');
-        glob_grid.isotope('stamp',stampe);
-        glob_grid.isotope('layout');
+//        glob_grid.isotope('stamp',stampe);
+//        glob_grid.isotope('layout');
 //			update_selection();
     }
   });

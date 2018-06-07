@@ -23,8 +23,8 @@
 			<script src="https://code.jquery.com/jquery-2.2.1.min.js"
 					 integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
 			crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 			<script src="client.js"></script>
 			<script src="https://rawgithub.com/jlord/sheetsee.js/master/js/sheetsee.js"></script>
@@ -111,8 +111,10 @@ body {
   padding: 2px;
 }
 .grid-item-inside-text {
+  /*
   padding: 3px;
   padding-bottom: 4px;
+    */
   position: relative;
   z-index: 5;
 }
@@ -120,6 +122,8 @@ body {
 @media only screen and (max-width: 767px) {
   .grid-item-inside {
     width: 50px;
+  font-size: 8px;
+/*  padding: 5px; */
   }
   .entity-name {
     display: none;
@@ -129,6 +133,8 @@ body {
 @media only screen and (min-width: 769px) {
   .grid-item-inside {
     width: 85px;
+  font-size: 8px;
+  padding: 5px;
   }
   .roundbox {
     min-width: 400px;
@@ -363,6 +369,14 @@ h1 {
   margin-bottom: 20px;
 }
 
+.quadrant {
+  width: 50%; height: 50%; float: left;
+}
+
+.dropdown {
+  position: relative;
+}
+
 </style>
 
 
@@ -387,8 +401,14 @@ h1 {
 </div>
   </div>
   	<div class="grid">
+      <!--
+      <div id="quadrant1" class="quadrant grid-inner-General-Assembly"></div>
+      <div id="quadrant2" class="quadrant grid-inner-Secretariat"></div>
+      <div id="quadrant3" class="quadrant grid-inner-Economic-and-Social-Council"></div>
+      <div id="quadrant4" class="quadrant grid-inner-Security-Council"></div>
+      -->
       <div class="grid-sizer"></div>
-
+      <!--
 <div class="dropdown">
   <div class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons">
     <label class="btn btn-secondary active">
@@ -396,7 +416,9 @@ h1 {
     </label>
   </div>
 </div>
+      -->
     </div>
+
     </main>
   <div class="remodal" data-remodal-id="modal">
   </div>
