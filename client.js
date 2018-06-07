@@ -131,9 +131,12 @@ var get_inner_classes = function(e) {
   return classes.join(' ');
 }
 
+var get_grid_class_text = function(e) {
+  return e.replace(/[^a-z0-9 ]/gi,'').replace(new RegExp(' ', 'g'),'-');
+}
 var get_grid_class = function(e) {
   text = e[0]['UN Principal Organs'];
-  return text.replace(/[^a-z0-9 ]/gi,'').replace(new RegExp(' ', 'g'),'-');
+  return get_grid_class_text(text);
 }
 
 var get_acronym = function(e) {
@@ -167,24 +170,42 @@ var process_sheet = function(data) {
   });
 }
 
-var get_origin_left = function(grid_class) {
-  switch(grid_class) {
-  case '.grid-inner-General-Assembly': return false;
-  case '.grid-inner-Secretariat': return true;
-  case '.grid-inner-Economic-and-Social-Council': return false;
-  case '.grid-inner-Security-Council': return true;
-  }
-  return false;
+var stamp_inner_grids = function(data,stamp) {
+  var groups = get_groups(data['Entities']);
+  Object.keys(groups).forEach(function(k) {
+    var class_name = get_grid_class_text(k);
+    console.log(class_name);
+    var grid_inner = $('.grid-inner-'+class_name);
+    grid_inner.isotope('stamp',stamp);
+    grid_inner.isotope('layout');
+    var children = grid_inner.children('.grid-item-inside');
+    if(class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
+      var top = parseInt($(children[children.length-1]).css('top').replace('px',''));
+      var child_height = $(children[children.length-1]).height();
+      grid_inner.css('height', top+child_height+40);
+    }
+  });
+  glob_grid.isotope('layout');
 }
-var get_origin_top = function(grid_class) {
-  switch(grid_class) {
-  case '.grid-inner-General-Assembly': return false;
-  case '.grid-inner-Secretariat': return false;
-  case '.grid-inner-Economic-and-Social-Council': return true;
-  case '.grid-inner-Security-Council': return true;
-  }
-  return false;
-}
+
+// var get_origin_left = function(grid_class) {
+//   switch(grid_class) {
+//   case '.grid-inner-General-Assembly': return false;
+//   case '.grid-inner-Secretariat': return true;
+//   case '.grid-inner-Economic-and-Social-Council': return false;
+//   case '.grid-inner-Security-Council': return true;
+//   }
+//   return false;
+// }
+// var get_origin_top = function(grid_class) {
+//   switch(grid_class) {
+//   case '.grid-inner-General-Assembly': return false;
+//   case '.grid-inner-Secretariat': return false;
+//   case '.grid-inner-Economic-and-Social-Council': return true;
+//   case '.grid-inner-Security-Council': return true;
+//   }
+//   return false;
+// }
 
 var process_inner_grid = function(elements, grid_class, data) {
   var template = $('#templateinner').html();
@@ -205,7 +226,8 @@ var process_inner_grid = function(elements, grid_class, data) {
   $(grid_class).isotope({
     itemSelector: '.grid-item-inside',
     layoutMode: 'packery',
-    originTop: false,
+    stamp: '.stamp'
+//    originTop: false,
 //    originTop: get_origin_top(grid_class)
   });
 }
@@ -288,6 +310,15 @@ function display_modal(object) {
   inst.open();
 }
 
+var move_button_interface = function(div) {
+  // estimate how many columns there are inside the top-left box
+  var quantity_of_elements = Math.floor ( ($('.grid-inner-General-Assembly').width() - 30) / 75 - 1);
+  var left = 20 + quantity_of_elements * (10 + $('.grid-item-inside-text').width());
+  var top = $('.grid-inner-General-Assembly').height() + 15;
+  $(div).css('left',left);
+  $(div).css('top',top);
+}
+
 var glob_crime_types;
 var glob_selection = 'General Description';
 var glob_grid;
@@ -304,14 +335,16 @@ $(function() {
       glob_grid = $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
+        layoutMode: 'packery',
         masonry: {
           columnWidth: '.grid-sizer'
         },
-        stamp: '.stamp'
       });
       glob_grid.append('<div class="dropdown"><div class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select all</label></div>');
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
-        stampe = glob_grid.find('.stamp');
+      move_button_interface($('.stamp'));
+      stampe = glob_grid.find('.stamp');
+      stamp_inner_grids(data,stampe);
 //        glob_grid.isotope('stamp',stampe);
 //        glob_grid.isotope('layout');
 //			update_selection();
