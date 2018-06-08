@@ -117,6 +117,7 @@ body {
     */
   position: relative;
   z-index: 5;
+  padding: 5px;
 }
 
 @media only screen and (max-width: 767px) {
@@ -134,7 +135,9 @@ body {
   .grid-item-inside {
     width: 85px;
   font-size: 8px;
+    /*
   padding: 5px;
+    */
   }
   .roundbox {
     min-width: 400px;
@@ -377,6 +380,49 @@ h1 {
   position: relative;
 }
 
+.pulse:before,
+.pulse:after {
+  pointer-events: none;
+  position: absolute;
+  content: '';
+  height: 0;
+  width: 0;
+  top: 0%;
+  left: 0%;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #555555;
+  animation: glow-grow 2s ease-out 1;
+}
+.pulse:after {
+  animation-delay: .66s;
+}
+.pulse{
+  animation-delay: 1.33s;
+  }
+@keyframes glow-grow {
+  0% {
+    pointer-events: none;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  80% {
+    pointer-events: none;
+    height: 100%;
+    width: 100%;
+    opacity: 1;
+  }
+  100% {
+    pointer-events: none;
+    height: 100%;
+    width: 100%;
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+
 </style>
 
 
@@ -401,12 +447,6 @@ h1 {
 </div>
   </div>
   	<div class="grid">
-      <!--
-      <div id="quadrant1" class="quadrant grid-inner-General-Assembly"></div>
-      <div id="quadrant2" class="quadrant grid-inner-Secretariat"></div>
-      <div id="quadrant3" class="quadrant grid-inner-Economic-and-Social-Council"></div>
-      <div id="quadrant4" class="quadrant grid-inner-Security-Council"></div>
-      -->
       <div class="grid-sizer"></div>
       <!--
 <div class="dropdown">

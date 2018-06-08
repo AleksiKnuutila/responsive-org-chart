@@ -179,10 +179,16 @@ var stamp_inner_grids = function(data,stamp) {
     grid_inner.isotope('stamp',stamp);
     grid_inner.isotope('layout');
     var children = grid_inner.children('.grid-item-inside');
+    // hacky solution to issue of false resizing of boxes
     if(class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
       var top = parseInt($(children[children.length-1]).css('top').replace('px',''));
       var child_height = $(children[children.length-1]).height();
       grid_inner.css('height', top+child_height+40);
+    }
+    // for some reason packery layout mode works weirdly with this box
+    if(class_name === 'Economic-and-Social-Council') {
+      grid_inner.isotope({layoutMode: 'masonry'});
+      grid_inner.isotope('layout');
     }
   });
   glob_grid.isotope('layout');
@@ -240,15 +246,15 @@ var change_opacity = function(e,val) {
   var currentColor = $(e).css('background-color');
   var lastComma = getPosition(currentColor, ',', 3);
   var newColor = currentColor.slice(0, lastComma) + ", "+ val + ")";
-  $(e).animate({'background-color': newColor},500);
+  $(e).animate({'background-color': newColor},1000);
 }
 
 var highlight = function(crime_class) {
   $('.'+crime_class).each(function(i,e) {
-    $(e).addClass('highlight-grid-item',300);
+    $(e).addClass('highlight-grid-item',600);
   });
   $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
-    $(e).addClass('unhighlight-grid-item',300);
+    $(e).addClass('unhighlight-grid-item',600);
     change_opacity($(e).children()[0],'0');
   });
   $('.cardbody').each(function(i,e) {
@@ -295,7 +301,7 @@ var remove_highlight = function() {
 
 var generate_dropdown = function(element,crime_types) {
   crime_types.forEach(function(c) {
-    $(element).append('<label class="btn btn-secondary"><input type="radio" name="options" id="option3" autocomplete="off">'+c+'</label>');
+    $(element).append('<label class="crimeselection btn btn-secondary"><input type="radio" name="options" autocomplete="off">'+c+'</label>');
 //    $(element).append('<a class="dropdown-item" href="#">'+c+'</a>');
   });
 }
@@ -319,6 +325,14 @@ var move_button_interface = function(div) {
   $(div).css('top',top);
 }
 
+var generate_pulse = function() {
+  var el = $('#dropdown-group');
+  el.removeClass('pulse');
+  setTimeout(function () {
+    el.addClass('pulse');
+  }, 0);
+}
+
 var glob_crime_types;
 var glob_selection = 'General Description';
 var glob_grid;
@@ -340,8 +354,28 @@ $(function() {
           columnWidth: '.grid-sizer'
         },
       });
-      glob_grid.append('<div class="dropdown"><div class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select all</label></div>');
+      glob_grid.append('<div class="dropdown"><div id="dropdown-group" class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label id="clear-button" class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select crime type</label></div>');
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
+      $(".crimeselection").click(function(){
+        generate_pulse();
+  //      remove_highlight();
+        if(glob_selection === 'General Description') {
+          // first highlight
+          highlight(get_crime_type_class($(this).text()));
+        } else {
+          switch_highlight(get_crime_type_class($(this).text()));
+        }
+        $(".btn:first-child").text('Select all');
+//        $(".btn:first-child").val($(this).text());
+        glob_selection = $(this).text();
+     });
+     $('#clear-button').click(function(){
+        remove_highlight();
+        glob_selection = 'General Description';
+        $(".btn:first-child").text('Select crime type');
+        $(".btn:first-child").val('Select crime type');
+        $('.btn-group-vertical').find('label').removeClass('active').end().find('[type="radio"]').prop('checked', false)
+     });
       move_button_interface($('.stamp'));
       stampe = glob_grid.find('.stamp');
       stamp_inner_grids(data,stampe);
@@ -350,24 +384,6 @@ $(function() {
 //			update_selection();
     }
   });
-    $(".dropdown-menu").on('click', 'a', function(){
-//      remove_highlight();
-      if(glob_selection === 'General Description') {
-        // first highlightj
-        highlight(get_crime_type_class($(this).text()));
-      } else {
-        switch_highlight(get_crime_type_class($(this).text()));
-      }
-      $(".btn:first-child").text($(this).text());
-      $(".btn:first-child").val($(this).text());
-      glob_selection = $(this).text();
-   });
-   $('#clear-button').click(function(){
-      remove_highlight();
-      glob_selection = 'General Description';
-      $(".btn:first-child").text('Select crime type');
-      $(".btn:first-child").val('Select crime type');
-   });
-   var inst = $('[data-remodal-id=modal]').remodal();
+  var inst = $('[data-remodal-id=modal]').remodal();
    inst.close();
 })
