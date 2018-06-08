@@ -325,6 +325,15 @@ var move_button_interface = function(div) {
   var top = $('.grid-inner-General-Assembly').height() + 15;
   $(div).css('left',left);
   $(div).css('top',top);
+  if($(window).width() < 860) {
+    $(div).css('left',0);
+    $(div).css('top',0);
+    $(div).detach();
+    $(div).removeClass('stamp');
+    $('.nogridbuttons').append(div);
+    $(div).css('display','inline-block');
+    $(div).css('margin-bottom','25px');
+  }
 }
 
 var generate_pulse = function() {
