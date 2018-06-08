@@ -249,7 +249,8 @@ var change_opacity = function(e,val) {
   $(e).animate({'background-color': newColor},1000);
 }
 
-var highlight = function(crime_class) {
+var highlight = function() {
+  crime_class = get_crime_type_class(glob_selection);
   $('.'+crime_class).each(function(i,e) {
     $(e).addClass('highlight-grid-item',600);
   });
@@ -265,7 +266,8 @@ var highlight = function(crime_class) {
   });
 }
 
-var switch_highlight = function(crime_class) {
+var switch_highlight = function() {
+  crime_class = get_crime_type_class(glob_selection);
   $('.highlight-grid-item').each(function(i,e) {
     $(e).removeClass('highlight-grid-item',900);
   });
@@ -361,13 +363,14 @@ $(function() {
   //      remove_highlight();
         if(glob_selection === 'General Description') {
           // first highlight
-          highlight(get_crime_type_class($(this).text()));
+          glob_selection = $(this).text();
+          setTimeout(highlight,750);
         } else {
-          switch_highlight(get_crime_type_class($(this).text()));
+          glob_selection = $(this).text();
+          setTimeout(switch_highlight,750);
         }
         $(".btn:first-child").text('Select all');
 //        $(".btn:first-child").val($(this).text());
-        glob_selection = $(this).text();
      });
      $('#clear-button').click(function(){
         remove_highlight();
