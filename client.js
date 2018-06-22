@@ -174,19 +174,19 @@ var stamp_inner_grids = function(data,stamp) {
   var groups = get_groups(data['Entities']);
   Object.keys(groups).forEach(function(k) {
     var class_name = get_grid_class_text(k);
-    console.log(class_name);
     var grid_inner = $('.grid-inner-'+class_name);
     grid_inner.isotope('stamp',stamp);
     grid_inner.isotope('layout');
     var children = grid_inner.children('.grid-item-inside');
     // hacky solution to issue of false resizing of boxes
-    if(class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
+//    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
+    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
       var top = parseInt($(children[children.length-1]).css('top').replace('px',''));
       var child_height = $(children[children.length-1]).height();
-      grid_inner.css('height', top+child_height+40);
+      grid_inner.css('height', top+child_height+25);
     }
     // for some reason packery layout mode works weirdly with this box
-    if(class_name === 'Economic-and-Social-Council') {
+    if(class_name === 'General-Assembly') {
       grid_inner.isotope({layoutMode: 'masonry'});
       grid_inner.isotope('layout');
     }
@@ -242,55 +242,97 @@ function getPosition(string, subString, index) {
    return string.split(subString, index).join(subString).length;
 }
 
-var change_opacity = function(e,val) {
+var change_opacity = function(e,val,delay=1000) {
   var currentColor = $(e).css('background-color');
   var lastComma = getPosition(currentColor, ',', 3);
   var newColor = currentColor.slice(0, lastComma) + ", "+ val + ")";
-  $(e).animate({'background-color': newColor},1000);
+  $(e).animate({'background-color': newColor},delay);
+}
+
+var get_index = function(e) {
+  var parent = $(e).parent();
+  var children = parent.children();
+  for (i=0;i<children.length;i++) {
+    if(e===children[i]) return i;
+  }
+  return 1;
+}
+var get_total_length = function(e) {
+  return $(e).parent().children().length;
+}
+
+var easeout = function (val, max) {
+  t = val/max;
+  x = t*(2-t);
+  return x;
+}
+
+var get_delay = function(e) {
+  var cl = $(e).parent().attr("class");
+  if(cl === 'grid-inner-Secretariat' || cl === 'grid-inner-General-Assembly') {
+    return easeout(get_index(e),get_total_length(e))*1000;
+//    return (get_index(e)/get_total_length(e))*2000;
+  }
+  return easeout(get_total_length(e)-get_index(e),get_total_length(e))*1000;
 }
 
 var highlight = function() {
+  console.log('highlight');
   crime_class = get_crime_type_class(glob_selection);
   $('.'+crime_class).each(function(i,e) {
-    $(e).addClass('highlight-grid-item',600);
+    setTimeout(function(){
+    $(e).addClass('highlight-grid-item');
+  },1500);
   });
-  $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
-    $(e).addClass('unhighlight-grid-item',600);
+//  $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
+  $('.grid-item-inside:not(.'+crime_class+')').each(function(i,e) {
+    console.log('inside with delay '+get_delay(e));
+    setTimeout(function(){
+    $(e).addClass('unhighlight-grid-item');
     change_opacity($(e).children()[0],'0');
+    },get_delay(e));
   });
   $('.cardbody').each(function(i,e) {
-    change_opacity(e,'0.3');
+    setTimeout(function(){
+    change_opacity(e,'0.0');
+    },200);
   });
   $('.header').each(function(i,e) {
-    change_opacity(e,'0.3');
+    setTimeout(function(){
+    change_opacity(e,'0.0');
+    },200);
   });
 }
 
 var switch_highlight = function() {
   crime_class = get_crime_type_class(glob_selection);
   $('.highlight-grid-item').each(function(i,e) {
-    $(e).removeClass('highlight-grid-item',900);
+    $(e).removeClass('highlight-grid-item');
   });
 //  $('.unhighlight-grid-item').each(function(i,e) {
 //    $(e).removeClass('unhighlight-grid-item',300);
 //    change_opacity($(e).children()[0],'0.99');
 //  });
+  setTimeout(function(){
   $('.'+crime_class).each(function(i,e) {
-    $(e).addClass('highlight-grid-item',900);
-    change_opacity($(e).children()[0],'0.99');
+    change_opacity($(e).children()[0],'0.99',500);
+    setTimeout(function(){
+    $(e).addClass('highlight-grid-item');
+    }, 950);
   });
+  }, 100);
   $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
-    $(e).addClass('unhighlight-grid-item',900);
-    change_opacity($(e).children()[0],'0');
+    $(e).addClass('unhighlight-grid-item');
+    change_opacity($(e).children()[0],'0',1000);
   });
 }
 
 var remove_highlight = function() {
   $('.highlight-grid-item').each(function(i,e) {
-    $(e).removeClass('highlight-grid-item',300);
+    $(e).removeClass('highlight-grid-item');
   });
   $('.unhighlight-grid-item').each(function(i,e) {
-    $(e).removeClass('unhighlight-grid-item',300);
+    $(e).removeClass('unhighlight-grid-item');
     change_opacity($(e).children()[0],'0.99');
   });
   $('.cardbody').each(function(i,e) {
@@ -321,8 +363,8 @@ function display_modal(object) {
 var move_button_interface = function(div) {
   // estimate how many columns there are inside the top-left box
   var quantity_of_elements = Math.floor ( ($('.grid-inner-General-Assembly').width() - 30) / 75 - 1);
-  var left = 20 + quantity_of_elements * (10 + $('.grid-item-inside-text').width());
-  var top = $('.grid-inner-General-Assembly').height() + 15;
+  var left = 95 + quantity_of_elements * (10 + $('.grid-item-inside-text').width());
+  var top = $('.grid-inner-General-Assembly').height() - 25;
   $(div).css('left',left);
   $(div).css('top',top);
   if($(window).width() < 860) {
@@ -357,6 +399,7 @@ $(function() {
       $('.header').each(function (i,a) {
         $(a).bigtext({maxfontsize: 48,minfontsize: 6});
       });
+      $("#span-Secretariat").css('font-size','32px')
       glob_grid = $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
@@ -368,15 +411,17 @@ $(function() {
       glob_grid.append('<div class="dropdown"><div id="dropdown-group" class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label id="clear-button" class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select crime type</label></div>');
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
       $(".crimeselection").click(function(){
-        generate_pulse();
+//        generate_pulse();
   //      remove_highlight();
         if(glob_selection === 'General Description') {
           // first highlight
           glob_selection = $(this).text();
-          setTimeout(highlight,750);
+//          setTimeout(highlight,750);
+          highlight();
         } else {
           glob_selection = $(this).text();
-          setTimeout(switch_highlight,750);
+//          setTimeout(switch_highlight,750);
+          switch_highlight();
         }
         $(".btn:first-child").text('Select all');
 //        $(".btn:first-child").val($(this).text());
