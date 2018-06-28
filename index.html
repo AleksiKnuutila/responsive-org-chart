@@ -104,6 +104,7 @@ body {
 
 .unhighlight-grid-item {
   z-index: 1;
+  display:none;
 }
 
 .desaturate {
@@ -113,6 +114,10 @@ body {
 .grid {
   z-index: 0;
   max-width: 730px;
+  background-image: linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url("logobig.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .grid-sizer,
 .grid-item {
@@ -170,6 +175,8 @@ body {
   font-family: 'Arimo', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
+    /* XXX temp */
+  display: none;
 }
 .cardbody {
   font-size: 8px;
