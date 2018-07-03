@@ -102,9 +102,18 @@ body {
   z-index: 2;
 }
 
+.hide-header {
+  z-index: 1;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 1500ms, opacity 1500ms;
+}
+
 .unhighlight-grid-item {
   z-index: 1;
-  display:none;
+  visibility: hidden;
+  opacity: 0;
+  transition: box-shadow 2s ease, visibility 0s linear 300ms, opacity 300ms;
 }
 
 .desaturate {
@@ -142,8 +151,9 @@ body {
   .grid-item-inside {
     width: 50px;
   font-size: 8px;
+    visibility: visible;
 /*  padding: 5px; */
-    transition: box-shadow 2s ease;
+    transition: box-shadow 2s ease, visibility 1s linear 500ms, opacity 500ms;
   }
   .entity-name {
     display: none;
@@ -154,7 +164,8 @@ body {
   .grid-item-inside {
     width: 65px;
   font-size: 8px;
-    transition: box-shadow 2s ease;
+    transition: box-shadow 2s ease, visibility 1s linear 500ms, opacity 500ms;
+    visibility: visible;
     /*
   padding: 5px;
     */
@@ -175,8 +186,6 @@ body {
   font-family: 'Arimo', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
-    /* XXX temp */
-  display: none;
 }
 .cardbody {
   font-size: 8px;
@@ -442,11 +451,33 @@ h1 {
 }
 
 
+.dropdown-group {
+  background-color: #e1e1e1;
+  border-radius: 7px !important;
+}
 .btn {
-  border-radius: 0px !important;
+  background-color: #e1e1e1;
+  border-radius: 7px !important;
+  transition: 0.8s;
+  color: #666666;
+    border: 0px;
+}
+.btn:hover {
+    background-color: #545b62;
+    color: white;
+}
+ .btn:focus, btn:active {
+    background-color: #2098D1 !important;
+    color: white;
 }
 .dropdown-menu {
   padding: 0px;
+  border-radius: 7px !important;
+  background-color: #e1e1e1;
+}
+
+.btn-secondary:not(:disabled):not(.disabled).active, .btn-secondary:not(:disabled):not(.disabled):active, .show>.btn-secondary.dropdown-toggle {
+    background-color: #2098D1 !important;
 }
 
 </style>
