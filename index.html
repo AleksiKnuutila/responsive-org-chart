@@ -145,6 +145,12 @@ body {
   position: relative;
   z-index: 5;
   padding: 5px;
+  transition: background-color 0.8s, color 0.8s;
+}
+.grid-item-inside-text:hover {
+  background-color: #545b62 !important;
+  color: white;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 767px) {
@@ -153,7 +159,7 @@ body {
   font-size: 8px;
     visibility: visible;
 /*  padding: 5px; */
-    transition: box-shadow 2s ease, visibility 1s linear 500ms, opacity 500ms;
+    transition: box-shadow 2s ease, visibility 1s linear 500ms, opacity 500ms, background-color 0.8s, color 0.8s;
   }
   .entity-name {
     display: none;
@@ -164,7 +170,7 @@ body {
   .grid-item-inside {
     width: 65px;
   font-size: 8px;
-    transition: box-shadow 2s ease, visibility 1s linear 500ms, opacity 500ms;
+    transition: box-shadow 2s ease, visibility 1s linear 500ms, opacity 500ms, background-color 0.8s, color 0.8s;
     visibility: visible;
     /*
   padding: 5px;

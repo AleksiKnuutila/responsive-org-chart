@@ -310,7 +310,6 @@ var get_delay = function(e,reverse=false) {
 }
 
 var highlight = function() {
-  console.log('highlight');
   crime_class = get_crime_type_class(glob_selection);
   $('.'+crime_class).each(function(i,e) {
     setTimeout(function(){
@@ -319,7 +318,6 @@ var highlight = function() {
   });
 //  $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
   $('.grid-item-inside:not(.'+crime_class+')').each(function(i,e) {
-    console.log('inside with delay '+get_delay(e));
     setTimeout(function(){
       $(e).addClass('unhighlight-grid-item');
       //    change_opacity($(e).children()[0],'0');
@@ -347,14 +345,12 @@ var switch_highlight = function() {
   $('.unhighlight-grid-item').each(function(i,e) {
     //    $(e).removeClass('unhighlight-grid-item');
     //    change_opacity($(e).children()[0],'0.99');
-    console.log('deinside with delay '+get_delay(e));
     setTimeout(function(){
       $(e).removeClass('unhighlight-grid-item');
 //      change_opacity($(e).children()[0],'0.99');
     },get_delay(e)/2);
   });
   $('.grid-item-inside:not(.'+crime_class+')').each(function(i,e) {
-    console.log('inside with delay '+get_delay(e));
     setTimeout(function(){
       $(e).addClass('unhighlight-grid-item');
       //    change_opacity($(e).children()[0],'0');
@@ -383,7 +379,6 @@ var remove_highlight = function() {
   $('.unhighlight-grid-item').each(function(i,e) {
     //    $(e).removeClass('unhighlight-grid-item');
     //    change_opacity($(e).children()[0],'0.99');
-    console.log('deinside with delay '+get_delay(e));
     setTimeout(function(){
       $(e).removeClass('unhighlight-grid-item');
 //      change_opacity($(e).children()[0],'0.99');
@@ -470,6 +465,9 @@ $(function() {
       glob_grid.append('<div class="dropdown"><div id="dropdown-group" class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label id="clear-button" class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select crime type</label></div>');
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
       $(".crimeselection").click(function(){
+       if(document.getElementById("clear-button").disabled) { return false; }
+       document.getElementById("clear-button").disabled = true;
+       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
 //        generate_pulse();
   //      remove_highlight();
         if(glob_selection === 'General Description') {
@@ -486,6 +484,9 @@ $(function() {
 //        $(".btn:first-child").val($(this).text());
      });
      $('#clear-button').click(function(){
+       if(document.getElementById("clear-button").disabled) { return false; }
+       document.getElementById("clear-button").disabled = true;
+       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
         remove_highlight();
         glob_selection = 'General Description';
         $(".btn:first-child").text('Select crime type');
