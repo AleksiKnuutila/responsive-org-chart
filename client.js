@@ -51,10 +51,8 @@ var prepare_author = function(e) {
 
 var get_crime_types = function(data) {
   crime_types = [];
-  data.elements.forEach(function(e) {
-    crime_types.push(e.Crimes);
-  });
-  return crime_types;
+  keys = Object.keys(data.elements[0]);
+  return keys.slice(keys.indexOf("Description")+1,keys.length);
 }
 
 var get_groups = function(data) {
@@ -113,7 +111,7 @@ var get_classes = function(e) {
 
 var get_crime_type_class = function(classname) {
   switch (classname) {
-    case "Human trafficking and smuggling": return 'crime-trafficking';
+    case "Human trafficking & smuggling": return 'crime-trafficking';
     case "Environmental Crime": return 'crime-environmental';
     case "Arms Trafficking": return 'crime-arms';
     case "Drugs": return 'crime-drugs';
@@ -126,7 +124,7 @@ var get_crime_type_class = function(classname) {
 var get_inner_classes = function(e) {
   classes = [];
   glob_crime_types.forEach(function(c) {
-    if(e[c] && e[c] === "TRUE") {
+    if(e[c] && e[c] != "FALSE") {
       classes.push(get_crime_type_class(c));
     }
   });
@@ -149,7 +147,13 @@ var get_acronym = function(e) {
 
 var get_description = function(element,data) {
   var name = element['Entity Name'];
-  var descriptions = data['Descriptions'].elements.find(function(e) { return e['Entity Name'] === name })
+//  var descriptions = data['Descriptions'].elements.find(function(e) { return e['Entity Name'] === name })
+  var descriptions = data['Entities'].elements.find(function(e) {
+    return e['Entity Name'] === name
+  })
+  types = get_crime_types(data['Entities']);
+  descr = {};
+  types.forEach(function(e) { descr[e] = descriptions[e]; });
   return JSON.stringify(descriptions);
 }
 
@@ -399,7 +403,8 @@ var remove_highlight = function() {
 
 var generate_dropdown = function(element,crime_types) {
   crime_types.forEach(function(c) {
-    $(element).append('<label class="crimeselection btn btn-secondary"><input type="radio" name="options" autocomplete="off">'+c+'</label>');
+//    $(element).append('<label class="crimeselection btn btn-secondary"><input type="radio" name="options" autocomplete="off">'+c+'</label>');
+    $(element).append('<a class="dropdown-item crimeselection" href="#">'+c+'</a>');
 //    $(element).append('<a class="dropdown-item" href="#">'+c+'</a>');
   });
 }
@@ -409,6 +414,7 @@ function display_modal(object) {
   var descriptions = JSON.parse($(object).attr('data-descriptions'));
   var converter = new showdown.Converter();
   var html = converter.makeHtml(descriptions[glob_selection]);
+  if(glob_selection === 'General Description') { var html = converter.makeHtml(descriptions['Description']); }
   html += '</ul><button data-remodal-action="confirm" class="remodal-confirm">OK</button>';
   inst.$modal.html(html);
   inst.open();
@@ -417,8 +423,8 @@ function display_modal(object) {
 var move_button_interface = function(div) {
   // estimate how many columns there are inside the top-left box
   var quantity_of_elements = Math.floor ( ($('.grid-inner-General-Assembly').width() - 30) / 75 - 1);
-  var left = 95 + quantity_of_elements * (10 + $('.grid-item-inside-text').width());
-  var top = $('.grid-inner-General-Assembly').height() - 25;
+  var left = 70 + (quantity_of_elements-1) * (10 + $('.grid-item-inside-text').width());
+  var top = $('.grid-inner-General-Assembly').height() - 10;
   $(div).css('left',left);
   $(div).css('top',top);
   if($(window).width() < 860) {
@@ -432,14 +438,6 @@ var move_button_interface = function(div) {
   }
 }
 
-var generate_pulse = function() {
-  var el = $('#dropdown-group');
-  el.removeClass('pulse');
-  setTimeout(function () {
-    el.addClass('pulse');
-  }, 0);
-}
-
 var glob_crime_types;
 var glob_selection = 'General Description';
 var glob_grid;
@@ -448,7 +446,7 @@ $(function() {
     key: publicSpreadsheetUrl,
     callback: function gotData (data, tabletop) {
       $("#loadingdiv").fadeOut(400);
-      glob_crime_types = get_crime_types(data['Crimes']);
+      glob_crime_types = get_crime_types(data['Entities']);
       process_sheet(data);
       $('.header').each(function (i,a) {
         $(a).bigtext({maxfontsize: 48,minfontsize: 6});
@@ -462,13 +460,14 @@ $(function() {
           columnWidth: '.grid-sizer'
         },
       });
-      glob_grid.append('<div class="dropdown"><div id="dropdown-group" class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label id="clear-button" class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select crime type</label></div>');
+//      glob_grid.append('<div class="dropdown"><div id="dropdown-group" class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label id="clear-button" class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select crime type</label></div>');
+      glob_grid.append('<div id="dropdown-group"><div class="dropdown stamp"><img id="gilogo" src="globalinitiative.png"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select crime type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton"></div>');
+      $('.dropdown-menu').append('<a id="clear-button" class="dropdown-item" href="#">Select all</a>');
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
       $(".crimeselection").click(function(){
-       if(document.getElementById("clear-button").disabled) { return false; }
-       document.getElementById("clear-button").disabled = true;
-       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
-//        generate_pulse();
+//       if(document.getElementById("clear-button").disabled) { return false; }
+//       document.getElementById("clear-button").disabled = true;
+//       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
   //      remove_highlight();
         if(glob_selection === 'General Description') {
           // first highlight
@@ -482,20 +481,25 @@ $(function() {
         }
         $(".btn:first-child").text('Select all');
 //        $(".btn:first-child").val($(this).text());
+        $('.grid').css({"background-image": 'linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url("logobig.png")'});
      });
      $('#clear-button').click(function(){
-       if(document.getElementById("clear-button").disabled) { return false; }
-       document.getElementById("clear-button").disabled = true;
-       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
+//       if(document.getElementById("clear-button").disabled) { return false; }
+//       document.getElementById("clear-button").disabled = true;
+//       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
         remove_highlight();
         glob_selection = 'General Description';
         $(".btn:first-child").text('Select crime type');
         $(".btn:first-child").val('Select crime type');
-        $('.btn-group-vertical').find('label').removeClass('active').end().find('[type="radio"]').prop('checked', false)
+//        $('.btn-group-vertical').find('label').removeClass('active').end().find('[type="radio"]').prop('checked', false)
+        setTimeout(function(){
+        $('.grid').css({"background-image": 'none'})},1400);
      });
       move_button_interface($('.stamp'));
       stampe = glob_grid.find('.stamp');
       stamp_inner_grids(data,stampe);
+      $('.grid-inner-Economic-and-Social-Council').isotope('layout');
+      $('.grid').isotope('layout');
 //        glob_grid.isotope('stamp',stampe);
 //        glob_grid.isotope('layout');
 //			update_selection();
