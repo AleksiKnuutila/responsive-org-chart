@@ -78,6 +78,10 @@ var get_inner_group_name = function(e) {
 }
 
 var get_entity_class = function(e) {
+  class_name = e['UN Principal Organs'];
+  if(class_name === 'Peacebuilding Commission' || class_name === 'International Court of Justice' || class_name === 'Trusteeship Council') {
+    return 'small-entity';
+  }
   if(!get_acronym(e)) { return 'entity-name-nohide'; }
   return 'entity-name';
 }
@@ -108,10 +112,18 @@ var get_classes = function(e) {
   if(e['UN Principal Organs'] == 'Secretariat') { return 'grid-item--width2'; }
   return '';
 }
+var get_header_class = function(e) {
+  class_name = e['UN Principal Organs'];
+  if(class_name === 'Peacebuilding Commission' || class_name === 'International Court of Justice' || class_name === 'Trusteeship Council') {
+    return 'small-header';
+  } else {
+    return ''
+  }
+}
 
 var get_crime_type_class = function(classname) {
   switch (classname) {
-    case "Human trafficking & smuggling": return 'crime-trafficking';
+    case "Human Trafficking & Smuggling": return 'crime-trafficking';
     case "Environmental Crime": return 'crime-environmental';
     case "Arms Trafficking": return 'crime-arms';
     case "Drugs": return 'crime-drugs';
@@ -128,7 +140,11 @@ var get_inner_classes = function(e) {
       classes.push(get_crime_type_class(c));
     }
   });
-  return classes.join(' ');
+  class_name = e['UN Principal Organs'];
+  if(class_name === 'Peacebuilding Commission' || class_name === 'International Court of Justice' || class_name === 'Trusteeship Council') {
+    classes.push('grid-item-small')
+  }
+   return classes.join(' ');
 }
 
 var get_grid_class_text = function(e) {
@@ -167,6 +183,7 @@ var process_sheet = function(data) {
     var view = {
       'colour': get_colour(e[0]),
       'classes': get_classes(e[0]),
+      'header_class': get_header_class(e[0]),
       'group_name': get_group_name(e[0]),
       'inner-grid-name': grid_class
     };
@@ -176,6 +193,17 @@ var process_sheet = function(data) {
   });
 }
 
+var fix_div_sizes = function(grid_inner,class_name) {
+      var children = grid_inner.children('.grid-item-inside');
+    // hacky solution to issue of false resizing of boxes
+//    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
+    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
+      var topp = parseInt($(children[children.length-1]).css('top').replace('px',''));
+      var child_height = $(children[children.length-1]).height();
+      grid_inner.css('height', topp+child_height+20);
+    }
+}
+
 var stamp_inner_grids = function(data,stamp) {
   var groups = get_groups(data['Entities']);
   Object.keys(groups).forEach(function(k) {
@@ -183,14 +211,15 @@ var stamp_inner_grids = function(data,stamp) {
     var grid_inner = $('.grid-inner-'+class_name);
     grid_inner.isotope('stamp',stamp);
     grid_inner.isotope('layout');
-    var children = grid_inner.children('.grid-item-inside');
+    fix_div_sizes(grid_inner, class_name);
+//    var children = grid_inner.children('.grid-item-inside');
     // hacky solution to issue of false resizing of boxes
 //    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
-    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
-      var top = parseInt($(children[children.length-1]).css('top').replace('px',''));
-      var child_height = $(children[children.length-1]).height();
-      grid_inner.css('height', top+child_height+25);
-    }
+//    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
+//      var topp = parseInt($(children[children.length-1]).css('top').replace('px',''));
+//      var child_height = $(children[children.length-1]).height();
+//      grid_inner.css('height', topp+child_height+20);
+//    }
     // for some reason packery layout mode works weirdly with this box
     if(class_name === 'General-Assembly') {
       grid_inner.isotope({layoutMode: 'masonry'});
@@ -224,6 +253,7 @@ var process_inner_grid = function(elements, grid_class, data) {
   Mustache.parse(template);
 //  data.elements.forEach(function(e) {
   elements.forEach(function(e) {
+    if(e['Hide?'] == "TRUE") { return; }
     var view = {
       'colour': get_colour(e),
       'group_name': get_inner_group_name(e),
@@ -293,7 +323,7 @@ var get_delay = function(e,reverse=false) {
   var x1 = $(e).position().left;
   var y1 = $(e).position().top;
   var x2 = $(e).parent().width();
-  if(cl === 'grid-inner-Secretariat') {
+  if(cl === 'grid-inner-Secretariat' || cl === 'grid-inner-Security-Council' ) {
     var x2=0;
   }
   var y2 = $(e).parent().height();
@@ -398,13 +428,14 @@ var remove_highlight = function() {
 //    $(e).css('display','block');
     $(e).removeClass('hide-header');
     $($(e).children()).attr('style','');
+    $('#span-Secretariat').css('padding-bottom','8px');
   });
 }
 
 var generate_dropdown = function(element,crime_types) {
   crime_types.forEach(function(c) {
 //    $(element).append('<label class="crimeselection btn btn-secondary"><input type="radio" name="options" autocomplete="off">'+c+'</label>');
-    $(element).append('<a class="dropdown-item crimeselection" href="#">'+c+'</a>');
+    $(element).append('<a class="dropdown-item crimeselection" href="javascript:return false">'+c+'</a>');
 //    $(element).append('<a class="dropdown-item" href="#">'+c+'</a>');
   });
 }
@@ -424,7 +455,7 @@ var move_button_interface = function(div) {
   // estimate how many columns there are inside the top-left box
   var quantity_of_elements = Math.floor ( ($('.grid-inner-General-Assembly').width() - 30) / 75 - 1);
   var left = 70 + (quantity_of_elements-1) * (10 + $('.grid-item-inside-text').width());
-  var top = $('.grid-inner-General-Assembly').height() - 10;
+  var top = $('.grid-inner-General-Assembly').height() + 5;
   $(div).css('left',left);
   $(div).css('top',top);
   if($(window).width() < 860) {
@@ -438,6 +469,13 @@ var move_button_interface = function(div) {
   }
 }
 
+var change_dropdown_text = function(text) {
+  if(text === 'Human Trafficking & Smuggling') {
+    text = 'Human Traff. & Smugg.';
+  }
+  $(".dropdown-toggle").html(text+'&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;')
+}
+
 var glob_crime_types;
 var glob_selection = 'General Description';
 var glob_grid;
@@ -449,9 +487,13 @@ $(function() {
       glob_crime_types = get_crime_types(data['Entities']);
       process_sheet(data);
       $('.header').each(function (i,a) {
-        $(a).bigtext({maxfontsize: 48,minfontsize: 6});
+        $(a).bigtext({maxfontsize: 45,minfontsize: 6});
       });
-      $("#span-Secretariat").css('font-size','32px')
+      $('.grid-item-inside-text > .small-entity').each(function (i,a) {
+        b = $(a).parent();
+        $(b).bigtext({maxfontsize: 45,minfontsize: 6});
+      });
+//      $("#span-Secretariat").css('font-size','32px')
       glob_grid = $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
@@ -462,7 +504,7 @@ $(function() {
       });
 //      glob_grid.append('<div class="dropdown"><div id="dropdown-group" class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label id="clear-button" class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select crime type</label></div>');
       glob_grid.append('<div id="dropdown-group"><div class="dropdown stamp"><img id="gilogo" src="globalinitiative.png"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select crime type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton"></div>');
-      $('.dropdown-menu').append('<a id="clear-button" class="dropdown-item" href="#">Select all</a>');
+      $('.dropdown-menu').append('<a id="clear-button" class="dropdown-item" href="javascript:return false;">Select all</a>');
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
       $(".crimeselection").click(function(){
 //       if(document.getElementById("clear-button").disabled) { return false; }
@@ -482,6 +524,7 @@ $(function() {
         $(".btn:first-child").text('Select all');
 //        $(".btn:first-child").val($(this).text());
         $('.grid').css({"background-image": 'linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url("logobig.png")'});
+        change_dropdown_text($(this).text());
      });
      $('#clear-button').click(function(){
 //       if(document.getElementById("clear-button").disabled) { return false; }
@@ -489,8 +532,7 @@ $(function() {
 //       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
         remove_highlight();
         glob_selection = 'General Description';
-        $(".btn:first-child").text('Select crime type');
-        $(".btn:first-child").val('Select crime type');
+        change_dropdown_text('Select crime type');
 //        $('.btn-group-vertical').find('label').removeClass('active').end().find('[type="radio"]').prop('checked', false)
         setTimeout(function(){
         $('.grid').css({"background-image": 'none'})},1400);
@@ -500,6 +542,18 @@ $(function() {
       stamp_inner_grids(data,stampe);
       $('.grid-inner-Economic-and-Social-Council').isotope('layout');
       $('.grid').isotope('layout');
+      fix_div_sizes($('.grid-inner-Economic-and-Social-Council'),'Economic-and-Social-Council');
+      $('.grid').isotope('layout');
+      //    height: 354px;
+//    margin-left: 125px;
+//    margin-top: 4px;
+ if($(window).width() > 999) {
+      $('.grid-inner-General-Assembly').css('margin-left','125px');
+      $('.grid-inner-General-Assembly').isotope('layout');
+      $('.grid-inner-Security-Council').css('height','149px');
+      $('.grid-inner-General-Assembly').css('height','352px');
+      $('#span-Secretariat').css('padding-bottom','8px');
+ }
 //        glob_grid.isotope('stamp',stampe);
 //        glob_grid.isotope('layout');
 //			update_selection();

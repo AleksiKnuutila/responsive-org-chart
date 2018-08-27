@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Prototype for UN organisation visualisation</title>
+    <title>UN organisation visualisation</title>
     <meta name="description" content="Get Google Spreadsheets as JSON">
     <link href="https://fonts.googleapis.com/css?family=Arimo:400,700" rel="stylesheet">
     <meta charset="utf-8">
@@ -14,7 +14,7 @@
 
     <header class="container">
       <h1>
-        United Nations organisation visualisation (PROTOTYPE)
+        United Nations organisation visualisation
       </h1>
     </header>
 
@@ -57,7 +57,7 @@
 
 <script id="template" type="x-tmpl-mustache">
 <div class="grid-item {{ classes }}">
-  <div class="header" style="background-color: {{ colour }}">
+  <div class="header {{ header_class }}" style="background-color: {{ colour }}">
     <span id="span-{{ inner-grid-name }}">{{ group_name }}</span>
   </div>
   <div class="cardbody" style="background-color: {{ colour }}">
@@ -126,7 +126,7 @@ body {
 }
 .grid {
   z-index: 0;
-  max-width: 730px;
+  max-width: 1000px;
   background-image: none;
   background-size: contain;
   background-repeat: no-repeat;
@@ -162,8 +162,18 @@ transition: background 1.5s linear;
   color: white;
   cursor: pointer;
 }
+.dropdown-item:focus, .dropdown-item:hover {
+  color: white;
+  cursor: pointer;
+  background-color: #545b62 !important;
+}
+.dropdown-item {
+  padding: .55rem 1.5rem !important;
+  background-color: #5e4d6e !important;
+  color: white !important;
+}
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 999px) {
   .grid-item-inside {
     width: 50px;
   font-size: 8px;
@@ -174,17 +184,24 @@ transition: background 1.5s linear;
   .entity-name {
     display: none;
   }
+  .grid-item-small {
+    width: 80px !important;
+    height: 50px !important;
+  }
 }
 
-@media only screen and (min-width: 769px) {
+@media only screen and (min-width: 1000px) {
+  .grid-item-small {
+    width: 220px !important;
+  }
   .grid-item-inside {
     width: 65px;
-  font-size: 8px;
+    font-size: 8px;
     transition: box-shadow 2s ease, visibility 1s linear 500ms, opacity 500ms, background-color 0.8s, color 0.8s;
     visibility: visible;
     /*
-  padding: 5px;
-    */
+       padding: 5px;
+     */
   }
   .roundbox {
     min-width: 400px;
@@ -490,14 +507,15 @@ h1 {
 }
 .dropdown-toggle {
   margin: auto;
-    margin-top:20px;
-
-     width: 222px;
-
-     font-size: 15px;
-
-     padding: 17px 10px 18px 11px;
+  margin-top:20px;
+  width: 222px;
+  font-size: 15px;
+  padding: 17px 10px 18px 11px;
   display: block;
+}
+.dropdown-toggle::after {
+    vertical-align: 0.05em !important;
+    border-top: 0.45em solid !important;
 }
 .dropdown {
   position: relative;
@@ -521,44 +539,55 @@ box-shadow: 6px 6px 15px 0px rgba(0,0,0,0.75);
     background-color: #5e4d6e !important;
 }
 
-</style>
+.small-header {
+  display: none;
+}
 
+.grid-inner-Security-Council > .grid-item-inside > .grid-item-inside-text {
+  padding: 4px;
+}
+.grid-inner-General-Assembly > .grid-item-inside > .grid-item-inside-text {
+  padding: 5px;
+}
+
+</style>
 
       </div>
     </div>
 
-  <div id="loadingdiv">
-  <div class="sk-fading-circle">
-  <div class="sk-circle1 sk-circle"></div>
-  <div class="sk-circle2 sk-circle"></div>
-  <div class="sk-circle3 sk-circle"></div>
-  <div class="sk-circle4 sk-circle"></div>
-  <div class="sk-circle5 sk-circle"></div>
-  <div class="sk-circle6 sk-circle"></div>
-  <div class="sk-circle7 sk-circle"></div>
-  <div class="sk-circle8 sk-circle"></div>
-  <div class="sk-circle9 sk-circle"></div>
-  <div class="sk-circle10 sk-circle"></div>
-  <div class="sk-circle11 sk-circle"></div>
-  <div class="sk-circle12 sk-circle"></div>
-</div>
-</div>
-  </div>
-  <div class="nogridbuttons" style="display: inline-block;"></div>
-  	<div class="grid">
+    <div id="loadingdiv">
+      <div class="sk-fading-circle">
+        <div class="sk-circle1 sk-circle"></div>
+        <div class="sk-circle2 sk-circle"></div>
+        <div class="sk-circle3 sk-circle"></div>
+        <div class="sk-circle4 sk-circle"></div>
+        <div class="sk-circle5 sk-circle"></div>
+        <div class="sk-circle6 sk-circle"></div>
+        <div class="sk-circle7 sk-circle"></div>
+        <div class="sk-circle8 sk-circle"></div>
+        <div class="sk-circle9 sk-circle"></div>
+        <div class="sk-circle10 sk-circle"></div>
+        <div class="sk-circle11 sk-circle"></div>
+        <div class="sk-circle12 sk-circle"></div>
+      </div>
+    </div>
+    </div>
+    <div class="nogridbuttons" style="display: inline-block;"></div>
+    <div class="grid">
       <div class="grid-sizer"></div>
       <!--
-<div class="dropdown">
-  <div class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons">
-    <label class="btn btn-secondary active">
-      <input type="radio" name="options" id="option1" autocomplete="off" checked>Select all
-    </label>
-  </div>
-</div>
+        <div class="dropdown">
+        <div class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+        <input type="radio" name="options" id="option1" autocomplete="off" checked>Select all
+        </label>
+        </div>
+        </div>
       -->
     </div>
     </main>
-  <div class="remodal" data-remodal-id="modal">
-  </div>
-	</body>
+    <div class="remodal" data-remodal-id="modal">
+    </div>
+    <div style="min-height: 200px;"></div>
+  </body>
 </html>
