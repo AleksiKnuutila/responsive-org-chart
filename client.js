@@ -163,7 +163,6 @@ var get_acronym = function(e) {
 
 var get_description = function(element,data) {
   var name = element['Entity Name'];
-//  var descriptions = data['Descriptions'].elements.find(function(e) { return e['Entity Name'] === name })
   var descriptions = data['Entities'].elements.find(function(e) {
     return e['Entity Name'] === name
   })
@@ -196,7 +195,6 @@ var process_sheet = function(data) {
 var fix_div_sizes = function(grid_inner,class_name) {
       var children = grid_inner.children('.grid-item-inside');
     // hacky solution to issue of false resizing of boxes
-//    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
     if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
       var topp = parseInt($(children[children.length-1]).css('top').replace('px',''));
       var child_height = $(children[children.length-1]).height();
@@ -212,15 +210,6 @@ var stamp_inner_grids = function(data,stamp) {
     grid_inner.isotope('stamp',stamp);
     grid_inner.isotope('layout');
     fix_div_sizes(grid_inner, class_name);
-//    var children = grid_inner.children('.grid-item-inside');
-    // hacky solution to issue of false resizing of boxes
-//    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'General-Assembly' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
-//    if(class_name === 'Peacebuilding-Commission' || class_name === 'Economic-and-Social-Council' || class_name === 'Security-Council' || class_name === 'International-Court-of-Justice' || class_name === 'Trusteeship-Council') {
-//      var topp = parseInt($(children[children.length-1]).css('top').replace('px',''));
-//      var child_height = $(children[children.length-1]).height();
-//      grid_inner.css('height', topp+child_height+20);
-//    }
-    // for some reason packery layout mode works weirdly with this box
     if(class_name === 'General-Assembly') {
       grid_inner.isotope({layoutMode: 'masonry'});
       grid_inner.isotope('layout');
@@ -229,29 +218,9 @@ var stamp_inner_grids = function(data,stamp) {
   glob_grid.isotope('layout');
 }
 
-// var get_origin_left = function(grid_class) {
-//   switch(grid_class) {
-//   case '.grid-inner-General-Assembly': return false;
-//   case '.grid-inner-Secretariat': return true;
-//   case '.grid-inner-Economic-and-Social-Council': return false;
-//   case '.grid-inner-Security-Council': return true;
-//   }
-//   return false;
-// }
-// var get_origin_top = function(grid_class) {
-//   switch(grid_class) {
-//   case '.grid-inner-General-Assembly': return false;
-//   case '.grid-inner-Secretariat': return false;
-//   case '.grid-inner-Economic-and-Social-Council': return true;
-//   case '.grid-inner-Security-Council': return true;
-//   }
-//   return false;
-// }
-
 var process_inner_grid = function(elements, grid_class, data) {
   var template = $('#templateinner').html();
   Mustache.parse(template);
-//  data.elements.forEach(function(e) {
   elements.forEach(function(e) {
     if(e['Hide?'] == "TRUE") { return; }
     var view = {
@@ -269,8 +238,6 @@ var process_inner_grid = function(elements, grid_class, data) {
     itemSelector: '.grid-item-inside',
     layoutMode: 'packery',
     stamp: '.stamp'
-//    originTop: false,
-//    originTop: get_origin_top(grid_class)
   });
 }
 
@@ -299,8 +266,6 @@ var get_total_length = function(e) {
 
 var easeout = function (val, max) {
   t = val/max;
-//  x = (--t)*t*t+1;
-//  x = t*(2-t);
   x = t;
   return x;
 }
@@ -311,13 +276,6 @@ var distance = function(x1,y1,x2,y2) {
   return Math.sqrt( a*a + b*b );
 }
 
-// var get_delay = function(e) {
-//   var cl = $(e).parent().attr("class");
-//   if(cl === 'grid-inner-Secretariat' || cl === 'grid-inner-General-Assembly') {
-//     return easeout(get_index(e),get_total_length(e))*1000;
-//   }
-//   return easeout(get_total_length(e)-get_index(e),get_total_length(e))*1000;
-// }
 var get_delay = function(e,reverse=false) {
   var cl = $(e).parent().attr("class");
   var x1 = $(e).position().left;
@@ -350,24 +308,17 @@ var highlight = function() {
     $(e).addClass('highlight-grid-item');
   },1500);
   });
-//  $('.grid-item-inside:not(.highlight-grid-item)').each(function(i,e) {
   $('.grid-item-inside:not(.'+crime_class+')').each(function(i,e) {
     setTimeout(function(){
       $(e).addClass('unhighlight-grid-item');
-      //    change_opacity($(e).children()[0],'0');
     },get_delay(e));
   });
   $('.cardbody').each(function(i,e) {
-//    setTimeout(function(){
     change_opacity(e,'0.0');
-//    },300);
   });
   $('.header').each(function(i,e) {
-//    setTimeout(function(){
     change_opacity(e,'0.0');
     $(e).addClass('hide-header');
-//    },300);
-//    $(e).css('visibility','hidden');
   });
 }
 
@@ -377,11 +328,8 @@ var switch_highlight = function() {
     $(e).removeClass('highlight-grid-item');
   });
   $('.unhighlight-grid-item').each(function(i,e) {
-    //    $(e).removeClass('unhighlight-grid-item');
-    //    change_opacity($(e).children()[0],'0.99');
     setTimeout(function(){
       $(e).removeClass('unhighlight-grid-item');
-//      change_opacity($(e).children()[0],'0.99');
     },get_delay(e)/2);
   });
   $('.grid-item-inside:not(.'+crime_class+')').each(function(i,e) {
@@ -395,15 +343,6 @@ var switch_highlight = function() {
     $(e).addClass('highlight-grid-item');
   },1500);
   });
-//  setTimeout(function(){
-//  $('.'+crime_class).each(function(i,e) {
-////    change_opacity($(e).children()[0],'0.99',300);
-//    setTimeout(function(){
-//    $(e).addClass('highlight-grid-item');
-//    $(e).css('display','block');
-//    }, 950);
-//  });
-//  }, 100);
 }
 
 var remove_highlight = function() {
@@ -411,11 +350,8 @@ var remove_highlight = function() {
     $(e).removeClass('highlight-grid-item');
   });
   $('.unhighlight-grid-item').each(function(i,e) {
-    //    $(e).removeClass('unhighlight-grid-item');
-    //    change_opacity($(e).children()[0],'0.99');
     setTimeout(function(){
       $(e).removeClass('unhighlight-grid-item');
-//      change_opacity($(e).children()[0],'0.99');
     },get_delay(e,true));
   });
   setTimeout(function(){
@@ -425,7 +361,6 @@ var remove_highlight = function() {
   },800);
   $('.header').each(function(i,e) {
     change_opacity(e,'0.99');
-//    $(e).css('display','block');
     $(e).removeClass('hide-header');
     $($(e).children()).attr('style','');
     $('#span-Secretariat').css('padding-bottom','8px');
@@ -434,9 +369,7 @@ var remove_highlight = function() {
 
 var generate_dropdown = function(element,crime_types) {
   crime_types.forEach(function(c) {
-//    $(element).append('<label class="crimeselection btn btn-secondary"><input type="radio" name="options" autocomplete="off">'+c+'</label>');
     $(element).append('<a class="dropdown-item crimeselection" href="javascript:return false">'+c+'</a>');
-//    $(element).append('<a class="dropdown-item" href="#">'+c+'</a>');
   });
 }
 
@@ -452,7 +385,6 @@ function display_modal(object) {
 }
 
 var move_button_interface = function(div) {
-  // estimate how many columns there are inside the top-left box
   var quantity_of_elements = Math.floor ( ($('.grid-inner-General-Assembly').width() - 30) / 75 - 1);
   var left = 70 + (quantity_of_elements-1) * (10 + $('.grid-item-inside-text').width());
   var top = $('.grid-inner-General-Assembly').height() + 5;
@@ -493,7 +425,6 @@ $(function() {
         b = $(a).parent();
         $(b).bigtext({maxfontsize: 45,minfontsize: 6});
       });
-//      $("#span-Secretariat").css('font-size','32px')
       glob_grid = $('.grid').isotope({
         itemSelector: '.grid-item',
         percentPosition: true,
@@ -502,38 +433,26 @@ $(function() {
           columnWidth: '.grid-sizer'
         },
       });
-//      glob_grid.append('<div class="dropdown"><div id="dropdown-group" class="stamp dropdown btn-group-vertical btn-group-toggle dropdown-menu" data-toggle="buttons"><label id="clear-button" class="btn btn-secondary active"><input type="radio" name="options" id="option1" autocomplete="off" checked>Select crime type</label></div>');
       glob_grid.append('<div id="dropdown-group"><div class="dropdown stamp"><img id="gilogo" src="globalinitiative.png"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select crime type &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;</button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton"></div>');
       $('.dropdown-menu').append('<a id="clear-button" class="dropdown-item" href="javascript:return false;">Select all</a>');
       generate_dropdown($(".dropdown-menu"),glob_crime_types);
       $(".crimeselection").click(function(){
-//       if(document.getElementById("clear-button").disabled) { return false; }
-//       document.getElementById("clear-button").disabled = true;
-//       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
-  //      remove_highlight();
         if(glob_selection === 'General Description') {
           // first highlight
           glob_selection = $(this).text();
-//          setTimeout(highlight,750);
           highlight();
         } else {
           glob_selection = $(this).text();
-//          setTimeout(switch_highlight,750);
           switch_highlight();
         }
         $(".btn:first-child").text('Select all');
-//        $(".btn:first-child").val($(this).text());
         $('.grid').css({"background-image": 'linear-gradient(rgba(255,255,255,0.5), rgba(255,255,255,0.5)), url("logobig.png")'});
         change_dropdown_text($(this).text());
      });
      $('#clear-button').click(function(){
-//       if(document.getElementById("clear-button").disabled) { return false; }
-//       document.getElementById("clear-button").disabled = true;
-//       setTimeout(function(){document.getElementById("clear-button").disabled = false;},1500);
         remove_highlight();
         glob_selection = 'General Description';
         change_dropdown_text('Select crime type');
-//        $('.btn-group-vertical').find('label').removeClass('active').end().find('[type="radio"]').prop('checked', false)
         setTimeout(function(){
         $('.grid').css({"background-image": 'none'})},1400);
      });
@@ -544,9 +463,6 @@ $(function() {
       $('.grid').isotope('layout');
       fix_div_sizes($('.grid-inner-Economic-and-Social-Council'),'Economic-and-Social-Council');
       $('.grid').isotope('layout');
-      //    height: 354px;
-//    margin-left: 125px;
-//    margin-top: 4px;
  if($(window).width() > 999) {
       $('.grid-inner-General-Assembly').css('margin-left','125px');
       $('.grid-inner-General-Assembly').isotope('layout');
@@ -554,9 +470,6 @@ $(function() {
       $('.grid-inner-General-Assembly').css('height','352px');
       $('#span-Secretariat').css('padding-bottom','8px');
  }
-//        glob_grid.isotope('stamp',stampe);
-//        glob_grid.isotope('layout');
-//			update_selection();
     }
   });
   var inst = $('[data-remodal-id=modal]').remodal();
